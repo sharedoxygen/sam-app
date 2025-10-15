@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sales Activity Manager - Jenkins CI/CD</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="favicon.svg" />
+  <meta name="theme-color" content="#1f2937" />
+
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-content">
+        <div class="logo-section">
+          <i class="fas fa-rocket logo-icon"></i>
+          <h1>Sales Activity Manager</h1>
+          <p class="subtitle">Jenkins CI/CD AUTOMATION SYSTEM</p>
+        </div>
+        <div class="status-indicators">
+          <div class="jenkins-status" id="jenkinsStatus">
+            <i class="fas fa-circle status-dot"></i>
+            <span>Jenkins Status</span>
+          </div>
+          <div class="last-updated" id="lastUpdated">
+            Last Updated: <span id="updateTime">--:--:--</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="controls-section">
+        <div class="quick-actions">
+          <button class="btn btn-primary" onclick="refreshStatus()">
+            <i class="fas fa-sync-alt"></i> Refresh Status
+          </button>
+          <button class="btn btn-secondary" onclick="toggleAutoRefresh()">
+            <i class="fas fa-clock"></i> Auto Refresh: <span id="autoRefreshStatus">ON</span>
+          </button>
+        </div>
+
+        <div class="global-actions">
+          <button class="btn btn-success" onclick="triggerAllBuilds()">
+            <i class="fas fa-play-circle"></i> Trigger All Builds
+          </button>
+          <button class="btn btn-warning" onclick="abortAllBuilds()">
+            <i class="fas fa-stop-circle"></i> Abort All Builds
+          </button>
+        </div>
+      </div>
+
+      <div class="pipeline-dashboard">
+        <div class="section-header">
+          <h2><i class="fas fa-code-branch"></i> Pipeline Status</h2>
+        </div>
+
+        <div class="pipeline-table">
+          <div class="table-header">
+            <div class="col-branch">Branch</div>
+            <div class="col-build">Build #</div>
+            <div class="col-status">Status</div>
+            <div class="col-duration">Duration</div>
+            <div class="col-time">Time</div>
+            <div class="col-actions">Actions</div>
+          </div>
+
+          <div class="table-row" data-branch="in-progress">
+            <div class="col-branch">
+              <div class="branch-info">
+                <i class="fas fa-code-branch branch-icon"></i>
+                <span class="branch-name">in-progress</span>
+                <span class="branch-tag">BUILD</span>
+              </div>
+            </div>
+            <div class="col-build">
+              <span class="build-number" id="build-in-progress">#--</span>
+            </div>
+            <div class="col-status">
+              <div class="status-badge" id="status-in-progress">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>LOADING</span>
+              </div>
+            </div>
+            <div class="col-duration">
+              <span id="duration-in-progress">--:--</span>
+            </div>
+            <div class="col-time">
+              <span id="time-in-progress">--:--:--</span>
+            </div>
+            <div class="col-actions">
+              <button class="btn-action btn-trigger" onclick="triggerBuild('in-progress')">
+                <i class="fas fa-play"></i>
+              </button>
+              <button class="btn-action btn-logs" onclick="viewLogs('in-progress')">
+                <i class="fas fa-file-alt"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-row" data-branch="development">
+            <div class="col-branch">
+              <div class="branch-info">
+                <i class="fas fa-code-branch branch-icon"></i>
+                <span class="branch-name">development</span>
+                <span class="branch-tag dev">DEV</span>
+              </div>
+            </div>
+            <div class="col-build">
+              <span class="build-number" id="build-development">#--</span>
+            </div>
+            <div class="col-status">
+              <div class="status-badge" id="status-development">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>LOADING</span>
+              </div>
+            </div>
+            <div class="col-duration">
+              <span id="duration-development">--:--</span>
+            </div>
+            <div class="col-time">
+              <span id="time-development">--:--:--</span>
+            </div>
+            <div class="col-actions">
+              <button class="btn-action btn-trigger" onclick="triggerBuild('development')">
+                <i class="fas fa-play"></i>
+              </button>
+              <button class="btn-action btn-logs" onclick="viewLogs('development')">
+                <i class="fas fa-file-alt"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-row" data-branch="publish">
+            <div class="col-branch">
+              <div class="branch-info">
+                <i class="fas fa-code-branch branch-icon"></i>
+                <span class="branch-name">publish</span>
+                <span class="branch-tag staging">STAGING</span>
+              </div>
+            </div>
+            <div class="col-build">
+              <span class="build-number" id="build-publish">#--</span>
+            </div>
+            <div class="col-status">
+              <div class="status-badge" id="status-publish">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>LOADING</span>
+              </div>
+            </div>
+            <div class="col-duration">
+              <span id="duration-publish">--:--</span>
+            </div>
+            <div class="col-time">
+              <span id="time-publish">--:--:--</span>
+            </div>
+            <div class="col-actions">
+              <button class="btn-action btn-trigger" onclick="triggerBuild('publish')">
+                <i class="fas fa-play"></i>
+              </button>
+              <button class="btn-action btn-logs" onclick="viewLogs('publish')">
+                <i class="fas fa-file-alt"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-row" data-branch="main">
+            <div class="col-branch">
+              <div class="branch-info">
+                <i class="fas fa-code-branch branch-icon"></i>
+                <span class="branch-name">main</span>
+                <span class="branch-tag production">PROD</span>
+              </div>
+            </div>
+            <div class="col-build">
+              <span class="build-number" id="build-main">#--</span>
+            </div>
+            <div class="col-status">
+              <div class="status-badge" id="status-main">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>LOADING</span>
+              </div>
+            </div>
+            <div class="col-duration">
+              <span id="duration-main">--:--</span>
+            </div>
+            <div class="col-time">
+              <span id="time-main">--:--:--</span>
+            </div>
+            <div class="col-actions">
+              <button class="btn-action btn-trigger" onclick="triggerBuild('main')">
+                <i class="fas fa-play"></i>
+              </button>
+              <button class="btn-action btn-logs" onclick="viewLogs('main')">
+                <i class="fas fa-file-alt"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recent-activity">
+        <div class="section-header">
+          <h2><i class="fas fa-history"></i> Recent Activity</h2>
+        </div>
+        <div id="activityLog" class="activity-log">
+          <!-- Activity items will be injected here by app.js -->
+          <div class="activity-item">
+            <div class="activity-time">--:--:--</div>
+            <div class="activity-message">Loading recent activity...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New Current Branch Log Section -->
+      <div class="current-branch-log-viewer recent-activity">
+        <!-- Reusing .recent-activity for similar styling -->
+        <div class="section-header">
+          <div class="section-header-title-refresh">
+            <h2>
+              <i class="fas fa-file-alt"></i> Current Branch Log:
+              <span id="currentLogBranchName" class="log-branch-name">None</span>
+            </h2>
+            <button id="refreshCurrentLogBtn" class="btn btn-secondary btn-sm" title="Refresh current branch log">
+              <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+          </div>
+        </div>
+        <div id="currentBranchLogContent" class="activity-log">
+          <pre id="currentLogText">
+Select a branch or trigger a build to see the latest log here.</pre>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <p>&copy; 2024 Sales Activity Manager - Jenkins CI/CD Dashboard</p>
+        <div class="footer-links">
+          <a href="http://localhost:9080" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Jenkins Console
+          </a>
+          <a href="https://github.com" target="_blank">
+            <i class="fab fa-github"></i> GitHub Repository
+          </a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Processing...</div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast" id="toast">
+    <div class="toast-content">
+      <div class="toast-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="toast-message">Action completed successfully</div>
+    </div>
+  </div>
+
+  <script src="jenkins-api.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1014 @@
+.dailyActivityContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 1rem;
+}
+
+/* Enhanced Header */
+.pageHeader {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  color: white;
+  padding: 2rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.pageHeader::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(50%, -50%);
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.titleSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.headerIcon {
+  font-size: 2.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pageTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.pageSubtitle {
+  font-size: 1.1rem;
+  margin: 0.5rem 0 0 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 400;
+}
+
+.headerStats {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.statItem {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  min-width: 120px;
+}
+
+.statValue {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.statLabel {
+  display: block;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+.targetButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  color: white;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+  min-width: 100px;
+}
+
+.targetButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.targetButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.targetButton svg {
+  font-size: 1.25rem;
+}
+
+/* Date Navigation */
+.dateSelector {
+  margin-bottom: 2rem;
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.dateNavigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.navButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.25rem;
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+}
+
+.navButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.4);
+}
+
+.navButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.currentDate {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 12px;
+  border: 2px solid var(--border-light);
+}
+
+.dateIcon {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+}
+
+.dateInfo {
+  text-align: center;
+}
+
+.dateText {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.todayButton {
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.todayButton:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+/* Summary Cards */
+.summaryCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.summaryCard {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.summaryCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.summaryIcon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+}
+
+.summaryContent {
+  margin-bottom: 1rem;
+}
+
+.summaryValue {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+  line-height: 1;
+}
+
+.summaryLabel {
+  font-size: 1rem;
+  color: var(--text-medium);
+  margin: 0.5rem 0;
+  font-weight: 500;
+}
+
+.summaryTarget {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.summaryProgress {
+  height: 6px;
+  background: #e9ecef;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--success-color), #20c997);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+  position: relative;
+  width: 0%;
+}
+
+/* Progress bar width classes */
+.progress0 {
+  width: 0%;
+}
+
+.progress10 {
+  width: 10%;
+}
+
+.progress20 {
+  width: 20%;
+}
+
+.progress30 {
+  width: 30%;
+}
+
+.progress40 {
+  width: 40%;
+}
+
+.progress50 {
+  width: 50%;
+}
+
+.progress60 {
+  width: 60%;
+}
+
+.progress70 {
+  width: 70%;
+}
+
+.progress80 {
+  width: 80%;
+}
+
+.progress90 {
+  width: 90%;
+}
+
+.progress100 {
+  width: 100%;
+}
+
+.progressBar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Activity Section */
+.activitySection {
+  margin-bottom: 3rem;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
+.sectionSubtitle {
+  font-size: 1.1rem;
+  color: var(--text-medium);
+  margin: 0;
+}
+
+/* Activity Input Cards */
+.activityCardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.activityInputCard {
+  background: white;
+  border-radius: 20px;
+  padding: 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.activityInputCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), var(--info-color), var(--success-color));
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.activityInputCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.activityInputCard:hover::before {
+  transform: scaleX(1);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.cardIcon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.revenueIcon {
+  background-color: #28a745;
+}
+
+.pipelineIcon {
+  background-color: #17a2b8;
+}
+
+.businessIcon {
+  background-color: #ffc107;
+}
+
+.reviewIcon {
+  background-color: #fd7e14;
+}
+
+.cardTitle {
+  flex: 1;
+}
+
+.cardTitle h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+  margin-bottom: 0.25rem;
+}
+
+.cardTitle p {
+  font-size: 0.9rem;
+  color: var(--text-medium);
+  margin: 0;
+}
+
+.cardValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  min-width: 60px;
+  text-align: center;
+}
+
+.cardMetrics {
+  padding: 1rem 1.5rem;
+}
+
+.metricRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f8f9fa;
+  font-size: 0.9rem;
+}
+
+.metricRow:last-child {
+  border-bottom: none;
+}
+
+.metricValue {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.cardAction {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  color: var(--text-medium);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.reviewsList {
+  margin-top: 0.5rem;
+}
+
+.reviewItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+  font-size: 0.8rem;
+}
+
+.clientName {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.rating {
+  color: #ffc107;
+}
+
+/* Save Status Banner */
+.errorBanner {
+  display: flex;
+  align-items: center;
+  background: #ffeaea;
+  border: 1px solid #ffcccb;
+  border-left: 4px solid var(--danger-color);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.1);
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.errorIcon {
+  font-size: 1.5rem;
+  color: var(--danger-color);
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.errorContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.errorTitle {
+  font-weight: 600;
+  color: var(--danger-color);
+  font-size: 1rem;
+}
+
+.errorMessage {
+  font-size: 0.9rem;
+  color: #721c24;
+  line-height: 1.4;
+}
+
+.saveStatusBanner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+  border-left: 4px solid var(--success-color);
+}
+
+.saveStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.saveIcon {
+  font-size: 1.25rem;
+}
+
+.saveIcon.spinning {
+  animation: spin 1s linear infinite;
+}
+
+.saveIcon.success {
+  color: var(--success-color);
+}
+
+.saveIcon.error {
+  color: var(--danger-color);
+}
+
+.saveStatusText {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.manualSaveButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+}
+
+.manualSaveButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.4);
+}
+
+.manualSaveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.performanceSection {
+  margin-top: 2rem;
+}
+
+.contentGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Enhanced animations */
+.activityInputCard {
+  animation: fadeInUp 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.activityInputCard:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.activityInputCard:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.activityInputCard:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.activityInputCard:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .activityCardsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dailyActivityContainer {
+    padding: 0.75rem;
+  }
+
+  .pageHeader {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .headerContent {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+
+  .pageTitle {
+    font-size: 2rem;
+  }
+
+  .headerStats {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .statItem {
+    min-width: 100px;
+    padding: 0.75rem;
+  }
+
+  .summaryCards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .summaryCard {
+    padding: 1rem;
+  }
+
+  .summaryValue {
+    font-size: 2rem;
+  }
+
+  .activityCardsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .dateNavigation {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .navButton {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.5rem;
+  }
+
+  .sectionSubtitle {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .summaryCards {
+    grid-template-columns: 1fr;
+  }
+
+  .dateNavigation {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .currentDate {
+    padding: 1rem;
+  }
+
+  .cardHeader {
+    padding: 1rem;
+  }
+
+  .cardMetrics {
+    padding: 0.75rem 1rem;
+  }
+
+  .cardAction {
+    padding: 0.75rem 1rem;
+  }
+
+  .activityInputCard:hover {
+    transform: translateY(-4px);
+  }
+}
+
+.saveAllText {
+  margin-left: 0.5rem;
+}
+
+/* ===== COMPREHENSIVE DARK MODE FIXES ===== */
+:global(html.theme-dark) .dailyActivityContainer {
+  background-color: var(--bg-light) !important;
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .headerSection {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .headerContent .pageTitle {
+  color: var(--text-dark) !important;
+  background: none !important;
+  -webkit-text-fill-color: unset !important;
+}
+
+:global(html.theme-dark) .headerContent .pageSubtitle,
+:global(html.theme-dark) .headerContent .pageDescription {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .performanceStats {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .statItem .statValue,
+:global(html.theme-dark) .statItem .statLabel {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .statItem .statSecondary {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .dateSection {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .selectedDate {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .dateInfo {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .summaryCards {
+  background: var(--card-bg) !important;
+}
+
+:global(html.theme-dark) .summaryCard {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .summaryCard .cardTitle,
+:global(html.theme-dark) .summaryCard .cardValue {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .summaryCard .cardSubtitle {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .progressBar {
+  background: var(--bg-dark, #2d3748) !important;
+}
+
+:global(html.theme-dark) .sectionTitle {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .sectionSubtitle {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .activityInputCard {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .activityInputCard:hover {
+  background: var(--bg-light) !important;
+  border-color: var(--primary-color) !important;
+}
+
+:global(html.theme-dark) .cardHeader {
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .cardTitle h3 {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .cardTitle p {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .cardValue {
+  color: var(--primary-color) !important;
+}
+
+:global(html.theme-dark) .cardMetrics {
+  background: var(--card-bg) !important;
+}
+
+:global(html.theme-dark) .metricRow {
+  border-color: var(--border-color) !important;
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .metricValue {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .cardAction {
+  background: var(--bg-dark, #2d3748) !important;
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .clientName {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .saveStatusBanner {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .saveStatusBanner.saved {
+  background: rgba(40, 167, 69, 0.1) !important;
+  border-color: var(--success-color) !important;
+  color: var(--success-color) !important;
+}
+
+:global(html.theme-dark) .saveStatusBanner.error {
+  background: rgba(220, 53, 69, 0.1) !important;
+  border-color: var(--danger-color) !important;
+  color: var(--danger-color) !important;
+}
+
+:global(html.theme-dark) .performanceSection {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .targetSettingSection {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .setTargetsBtn {
+  background: var(--primary-color) !important;
+  color: white !important;
+  border-color: var(--primary-color) !important;
+}
+
+:global(html.theme-dark) .setTargetsBtn:hover {
+  background: var(--primary-dark) !important;
+}
+
+/* Save All button dark mode */
+:global(html.theme-dark) .saveAllBtn {
+  background: var(--primary-color) !important;
+  color: white !important;
+}
+
+:global(html.theme-dark) .saveAllBtn:hover {
+  background: var(--primary-dark) !important;
+}
+
+:global(html.theme-dark) .saveAllBtn:disabled {
+  background: var(--text-medium) !important;
+  opacity: 0.6 !important;
+}
+
+/* Mobile responsiveness dark mode fixes */
+@media (max-width: 768px) {
+  :global(html.theme-dark) .headerSection {
+    background: var(--card-bg) !important;
+  }
+
+  :global(html.theme-dark) .summaryCards {
+    background: var(--bg-light) !important;
+  }
+}

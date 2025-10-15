@@ -1,0 +1,267 @@
+.metricsCard {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.metricsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.headerContent {
+  flex: 1;
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardSubtitle {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.editTargetsBtn {
+  background: var(--primary-color, #0d6efd);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.editTargetsBtn:hover {
+  background: var(--primary-dark, #0b5ed7);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+.editTargetsBtn:active {
+  transform: translateY(0);
+}
+
+.teamBadge {
+  background: var(--bg-light, #f8f9fa);
+  color: var(--text-muted);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.metricItem {
+  background: var(--bg-light, #f8f9fa);
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid var(--border-color, #dee2e6);
+}
+
+.metricItemContacts {
+  background: var(--bg-light, #f8f9fa);
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid var(--border-color, #dee2e6);
+  border-left-color: #0d6efd;
+}
+
+.metricItemConversations {
+  background: var(--bg-light, #f8f9fa);
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid var(--border-color, #dee2e6);
+  border-left-color: #20c997;
+}
+
+.metricItemSales {
+  background: var(--bg-light, #f8f9fa);
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid var(--border-color, #dee2e6);
+  border-left-color: #28a745;
+}
+
+.metricItemReferrals {
+  background: var(--bg-light, #f8f9fa);
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid var(--border-color, #dee2e6);
+  border-left-color: #fd7e14;
+}
+
+.metricItemPremium {
+  background: var(--bg-light, #f8f9fa);
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid var(--border-color, #dee2e6);
+  border-left-color: #6f42c1;
+}
+
+.metricIcon {
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-size: 1.2rem;
+}
+
+.metricContent {
+  flex: 1;
+}
+
+.metricLabel {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.metricValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+
+.metricTarget {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.metricPerformance {
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.metricPerformance.success {
+  color: #28a745;
+}
+
+.metricPerformance.warning {
+  color: #ffc107;
+}
+
+.metricPerformance.danger {
+  color: #dc3545;
+}
+
+.indicatorsSection {
+  border-top: 1px solid var(--border-light, #e9ecef);
+  padding-top: 16px;
+}
+
+.indicatorsTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 12px 0;
+}
+
+.indicatorsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.indicatorItem {
+  background: var(--bg-white, #ffffff);
+  border: 1px solid var(--border-light, #e9ecef);
+  border-radius: 6px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.indicatorIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+}
+
+.indicatorIconRn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  background: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+}
+
+.indicatorIconMl {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  background: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+}
+
+.indicatorContent {
+  flex: 1;
+}
+
+.indicatorLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+
+.indicatorValue {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.indicatorCount {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.indicatorPercentage {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}

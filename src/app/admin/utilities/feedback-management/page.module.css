@@ -1,0 +1,62 @@
+.dateCell {
+    white-space: nowrap;
+    width: 100px;
+}
+
+.typeCell {
+    white-space: nowrap;
+    font-weight: 600;
+    width: 120px;
+    color: #007bff;
+}
+
+.typeCell.typeBug {
+    color: #dc3545;
+}
+
+.typeCell.typeEnhancement {
+    color: #28a745;
+}
+
+.typeCell.typeGeneral {
+    color: #007bff;
+}
+
+.userCell {
+    min-width: 120px;
+}
+
+.pageCell {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.descriptionCell {
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+.statusCell {
+    min-width: 140px;
+}
+
+.statusSelect {
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    background-color: white;
+}
+
+.statusSelect:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.headerIcon {
+    color: #f59e0b;
+    font-size: 2rem;
+}

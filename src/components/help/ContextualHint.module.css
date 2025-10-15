@@ -1,0 +1,180 @@
+.hintContainer {
+  position: relative;
+  display: inline-block;
+  z-index: 1000;
+}
+
+.hintTrigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.75rem;
+}
+
+.hintTrigger:hover {
+  transform: scale(1.1);
+}
+
+.hintTrigger.info {
+  background-color: var(--color-info-light, #e3f2fd);
+  color: var(--color-info, #1976d2);
+  border: 1px solid var(--color-info-light, #bbdefb);
+}
+
+.hintTrigger.tip {
+  background-color: var(--color-warning-light, #fff3e0);
+  color: var(--color-warning, #f57c00);
+  border: 1px solid var(--color-warning-light, #ffcc02);
+}
+
+.hintTrigger.warning {
+  background-color: var(--color-error-light, #ffebee);
+  color: var(--color-error, #d32f2f);
+  border: 1px solid var(--color-error-light, #ffcdd2);
+}
+
+.hintTrigger.success {
+  background-color: var(--color-success-light, #e8f5e8);
+  color: var(--color-success, #388e3c);
+  border: 1px solid var(--color-success-light, #c8e6c9);
+}
+
+.hintTooltip {
+  position: absolute;
+  z-index: 1001;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 250px;
+  min-width: 200px;
+  background: white;
+  border: 1px solid var(--color-border, #e0e0e0);
+  opacity: 0;
+  animation: fadeInTooltip 0.2s ease forwards;
+}
+
+@keyframes fadeInTooltip {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hintTooltip::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+}
+
+/* Positioning */
+.hintTooltip.top {
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hintTooltip.top::before {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-color: white;
+}
+
+.hintTooltip.bottom {
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hintTooltip.bottom::before {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom-color: white;
+}
+
+.hintTooltip.left {
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.hintTooltip.left::before {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-left-color: white;
+}
+
+.hintTooltip.right {
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.hintTooltip.right::before {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-right-color: white;
+}
+
+.hintTitle {
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-text-primary, #333);
+}
+
+.hintContent {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--color-text-secondary, #666);
+}
+
+/* Type-specific styling */
+.hintTooltip.info {
+  border-left: 3px solid var(--color-info, #1976d2);
+}
+
+.hintTooltip.tip {
+  border-left: 3px solid var(--color-warning, #f57c00);
+}
+
+.hintTooltip.warning {
+  border-left: 3px solid var(--color-error, #d32f2f);
+}
+
+.hintTooltip.success {
+  border-left: 3px solid var(--color-success, #388e3c);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hintTooltip {
+    max-width: 200px;
+    min-width: 180px;
+    font-size: 0.75rem;
+    padding: 0.5rem;
+  }
+
+  .hintTitle {
+    font-size: 0.8125rem;
+  }
+
+  .hintContent {
+    font-size: 0.75rem;
+  }
+}

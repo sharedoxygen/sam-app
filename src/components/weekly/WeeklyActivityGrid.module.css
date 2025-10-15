@@ -1,0 +1,289 @@
+.weeklyActivityGridContainer {
+  background-color: var(--card-bg, #fff);
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--card-shadow, 0 2px 4px rgba(0, 0, 0, 0.05));
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.weeklyActivityTable {
+  margin-bottom: 2rem;
+}
+
+.weeklyActivityTable h3 {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 600;
+  color: var(--text-dark, #212529);
+  margin: 0 0 1rem 0;
+  border-bottom: 2px solid var(--primary-color, #0d6efd);
+  padding-bottom: 0.5rem;
+}
+
+.weeklyActivityTable table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--bg-white, #fff);
+  border-radius: var(--border-radius-md, 8px);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.weeklyActivityTable th {
+  background-color: var(--bg-light, #f8f9fa);
+  color: var(--text-dark, #212529);
+  font-weight: 600;
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 2px solid var(--border-light, #e9ecef);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.weeklyActivityTable td {
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-light, #e9ecef);
+  vertical-align: middle;
+}
+
+.activityLabel {
+  text-align: left !important;
+  font-weight: 500;
+  color: var(--text-dark, #212529);
+  background-color: var(--bg-light, #f8f9fa);
+}
+
+.valueChanger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btnControl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  color: var(--primary-color, #0d6efd);
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  border-radius: 50%;
+}
+
+.btnControl:hover {
+  background-color: var(--primary-bg-light, rgba(13, 110, 253, 0.1));
+  color: var(--primary-dark, #0b5ed7);
+  transform: scale(1.1);
+}
+
+.btnControl:focus {
+  outline: 2px solid var(--focus-color, #0d6efd);
+  outline-offset: 2px;
+}
+
+.value {
+  font-weight: 600;
+  color: var(--text-dark, #212529);
+  min-width: 30px;
+  text-align: center;
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.weeklyTotalsTable {
+  margin-bottom: 2rem;
+}
+
+.weeklyTotalsTable h3 {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 600;
+  color: var(--text-dark, #212529);
+  margin: 0 0 1rem 0;
+  border-bottom: 2px solid var(--success-color, #198754);
+  padding-bottom: 0.5rem;
+}
+
+.weeklyTotalsTable table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--bg-white, #fff);
+  border-radius: var(--border-radius-md, 8px);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.weeklyTotalsTable th {
+  background-color: var(--success-bg-light, rgba(25, 135, 84, 0.1));
+  color: var(--text-dark, #212529);
+  font-weight: 600;
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 2px solid var(--border-light, #e9ecef);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.weeklyTotalsTable td {
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-light, #e9ecef);
+  vertical-align: middle;
+}
+
+.weeklyRatiosTable {
+  margin-bottom: 1rem;
+}
+
+.weeklyRatiosTable h3 {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 600;
+  color: var(--text-dark, #212529);
+  margin: 0 0 1rem 0;
+  border-bottom: 2px solid var(--warning-color, #ffc107);
+  padding-bottom: 0.5rem;
+}
+
+.weeklyRatiosTable table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--bg-white, #fff);
+  border-radius: var(--border-radius-md, 8px);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.weeklyRatiosTable th {
+  background-color: var(--warning-bg-light, rgba(255, 193, 7, 0.1));
+  color: var(--text-dark, #212529);
+  font-weight: 600;
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 2px solid var(--border-light, #e9ecef);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.weeklyRatiosTable td {
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-light, #e9ecef);
+  vertical-align: middle;
+}
+
+.percentageValue {
+  font-weight: 600;
+  color: var(--text-dark, #212529);
+  min-width: 40px;
+  text-align: center;
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.percentageValue::after {
+  content: '%';
+  margin-left: 2px;
+  color: var(--text-medium, #6c757d);
+  font-size: 0.75rem;
+}
+
+.calculatedValue {
+  font-weight: 600;
+  color: var(--info-color, #0dcaf0);
+  background-color: var(--info-bg-light, rgba(13, 202, 240, 0.1));
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius-sm, 4px);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.gridLayout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.gridSection {
+  background-color: var(--bg-light, #f8f9fa);
+  border-radius: var(--border-radius-md, 8px);
+  padding: 1rem;
+  border-left: 4px solid var(--primary-color, #0d6efd);
+}
+
+.gridSection.totals {
+  border-left-color: var(--success-color, #198754);
+}
+
+.gridSection.ratios {
+  border-left-color: var(--warning-color, #ffc107);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .weeklyActivityGridContainer {
+    padding: 1rem;
+  }
+
+  .gridLayout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .weeklyActivityTable table,
+  .weeklyTotalsTable table,
+  .weeklyRatiosTable table {
+    font-size: 0.75rem;
+  }
+
+  .weeklyActivityTable th,
+  .weeklyActivityTable td,
+  .weeklyTotalsTable th,
+  .weeklyTotalsTable td,
+  .weeklyRatiosTable th,
+  .weeklyRatiosTable td {
+    padding: 0.5rem;
+  }
+
+  .valueChanger {
+    gap: 0.25rem;
+  }
+
+  .btnControl {
+    width: 20px;
+    height: 20px;
+    font-size: 0.75rem;
+  }
+
+  .value {
+    min-width: 25px;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .weeklyActivityTable h3,
+  .weeklyTotalsTable h3,
+  .weeklyRatiosTable h3 {
+    font-size: var(--font-size-base, 1rem);
+  }
+
+  .weeklyActivityTable table,
+  .weeklyTotalsTable table,
+  .weeklyRatiosTable table {
+    font-size: 0.6875rem;
+  }
+
+  .weeklyActivityTable th,
+  .weeklyActivityTable td,
+  .weeklyTotalsTable th,
+  .weeklyTotalsTable td,
+  .weeklyRatiosTable th,
+  .weeklyRatiosTable td {
+    padding: 0.375rem;
+  }
+
+  .gridSection {
+    padding: 0.75rem;
+  }
+}
+
+.tableSpaced {
+  margin-top: 1rem;
+}

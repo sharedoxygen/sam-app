@@ -1,0 +1,55 @@
+.reportTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.reportSummary {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.chart400 {
+  height: 400px;
+}
+
+.chart320 {
+  height: 320px;
+}
+
+.roleText {
+  font-size: 0.85em;
+}
+
+@media (max-width: 768px) {
+  .chartContainer .btn-group {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .chartContainer .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Chart Container Heights */
+.chartContainer400 {
+  height: 400px;
+}
+
+.chartContainer300 {
+  height: 300px;
+}
+
+/* Progress Bar */
+.progressBar {
+  height: 20px;
+}
+
+.progressBarFill {
+  transition: width 0.3s ease;
+}

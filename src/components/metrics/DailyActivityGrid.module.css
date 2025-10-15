@@ -1,0 +1,374 @@
+.dailyActivityGridContainer {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  background-color: var(--card-bg);
+  color: var(--text-dark);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Main Activity Entry Section */
+.activityEntryMain {
+  background: var(--card-bg);
+  color: var(--text-dark);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
+}
+
+.entryHeader {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.entryTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.entrySubtitle {
+  font-size: 1.1rem;
+  color: var(--text-medium);
+  margin: 0;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+/* Daily Activities Section - Enhanced with Modern Business UI */
+.dailyActivitiesSection {
+  background: var(--card-bg);
+  color: var(--text-dark);
+}
+
+.sectionHeader {
+  margin-bottom: 2rem;
+}
+
+.headerContent h3 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-dark);
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.headerContent p {
+  color: var(--text-medium);
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.activitiesGridModern {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.activityCategoryCard {
+  background: var(--bg-light);
+  border-radius: 16px;
+  padding: 2rem;
+  border-left: 6px solid var(--primary-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  margin-bottom: 1.5rem;
+}
+
+.cardHeader {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.categoryTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  color: var(--text-dark);
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.categorySubtitle {
+  font-size: 0.9rem;
+  color: var(--text-medium);
+  font-weight: 400;
+}
+
+.metricsRow {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.metricGroup {
+  background: var(--card-bg);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
+}
+
+.metricLabel {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-dark);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.daysGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.75rem;
+}
+
+.dayValueCard {
+  background: var(--bg-light);
+  border-radius: 6px;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.dayValueCard:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dayLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.valueChanger {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.btnControl {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.7rem;
+}
+
+.btnControl:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: scale(1.05);
+}
+
+.btnControl:disabled {
+  background: var(--text-light);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  min-width: 24px;
+  text-align: center;
+}
+
+/* Performance Sidebar */
+.performanceSidebar {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sidebarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sidebarTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.titleIcon {
+  color: var(--primary-color);
+}
+
+.exportBtnSmall {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exportBtnSmall:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+/* Compact KPI Summary */
+.kpiSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.kpiItem {
+  background: var(--bg-light);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.kpiValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin: 0;
+  line-height: 1;
+}
+
+.kpiLabel {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-medium);
+  margin: 0.25rem 0 0 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Compact Chart */
+.compactChart {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chartTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 1rem 0;
+}
+
+.chartWrapperSmall {
+  flex: 1;
+  min-height: 200px;
+  position: relative;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .dailyActivityGridContainer {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .performanceSidebar {
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .dailyActivityGridContainer {
+    padding: 1rem;
+  }
+
+  .activityEntryMain {
+    padding: 1.5rem;
+  }
+
+  .entryTitle {
+    font-size: 1.5rem;
+  }
+
+  .daysGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+
+  .dayValueCard {
+    padding: 0.5rem;
+  }
+
+  .metricGroup {
+    padding: 0.75rem;
+  }
+
+  .activityCategoryCard {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .daysGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .entryTitle {
+    font-size: 1.25rem;
+  }
+
+  .categoryTitle {
+    font-size: 1.25rem;
+  }
+}
