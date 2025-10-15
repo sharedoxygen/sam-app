@@ -1,0 +1,24 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="32" height="32" fill="#1f2937" rx="4"/>
+  
+  <!-- Main rocket shape (simplified for small size) -->
+  <g transform="translate(16, 16)">
+    <!-- Rocket body -->
+    <ellipse cx="0" cy="0" rx="3" ry="8" fill="#3b82f6"/>
+    <!-- Rocket tip -->
+    <ellipse cx="0" cy="-6" rx="2" ry="3" fill="#fbbf24"/>
+    <!-- Rocket window -->
+    <circle cx="0" cy="-2" r="1.5" fill="#60a5fa"/>
+    <!-- Exhaust -->
+    <ellipse cx="0" cy="6" rx="1.5" ry="2" fill="#f97316"/>
+  </g>
+  
+  <!-- CI/CD gear indicator -->
+  <circle cx="24" cy="8" r="3" fill="#10b981"/>
+  <circle cx="24" cy="8" r="1.5" fill="#1f2937"/>
+  
+  <!-- Success indicator -->
+  <circle cx="6" cy="26" r="2.5" fill="#10b981"/>
+  <path d="M 4.5 26 L 5.5 27 L 7.5 25" stroke="#ffffff" stroke-width="1" fill="none" stroke-linecap="round"/>
+</svg> 

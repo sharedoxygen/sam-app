@@ -1,0 +1,48 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sophisticated gradient background -->
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#93c5fd;stop-opacity:0.95" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer frame with subtle shadow -->
+  <rect x="2" y="2" width="44" height="44" rx="8" fill="url(#grad1)" opacity="0.08"/>
+  <rect x="4" y="4" width="40" height="40" rx="6" fill="none" stroke="url(#grad1)" stroke-width="1.5" opacity="0.2"/>
+  
+  <!-- Main ascending bars with depth -->
+  <g opacity="1">
+    <!-- Bar 1 -->
+    <rect x="11" y="30" width="4.5" height="10" rx="1.5" fill="url(#grad1)"/>
+    <rect x="11" y="30" width="4.5" height="3" rx="1.5" fill="#ffffff" opacity="0.2"/>
+    
+    <!-- Bar 2 -->
+    <rect x="17.5" y="25" width="4.5" height="15" rx="1.5" fill="url(#grad1)"/>
+    <rect x="17.5" y="25" width="4.5" height="3" rx="1.5" fill="#ffffff" opacity="0.2"/>
+    
+    <!-- Bar 3 -->
+    <rect x="24" y="19" width="4.5" height="21" rx="1.5" fill="url(#grad1)"/>
+    <rect x="24" y="19" width="4.5" height="3" rx="1.5" fill="#ffffff" opacity="0.2"/>
+    
+    <!-- Bar 4 -->
+    <rect x="30.5" y="14" width="4.5" height="26" rx="1.5" fill="url(#grad1)"/>
+    <rect x="30.5" y="14" width="4.5" height="3" rx="1.5" fill="#ffffff" opacity="0.2"/>
+  </g>
+  
+  <!-- Subtle connecting line showing upward trend -->
+  <path d="M13.25 34 L19.75 29 L26.25 23 L32.75 18" 
+        stroke="url(#grad2)" 
+        stroke-width="2" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        fill="none" 
+        opacity="0.6"/>
+  
+  <!-- Small accent dot at peak -->
+  <circle cx="32.75" cy="18" r="2" fill="url(#grad2)" opacity="0.8"/>
+</svg>

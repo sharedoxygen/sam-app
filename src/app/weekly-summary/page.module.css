@@ -1,0 +1,108 @@
+.weeklySummaryContainer {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  margin-bottom: 1.5rem;
+}
+
+.backNav {
+  margin-bottom: 1rem;
+}
+
+.backNavLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.backNavLink:hover {
+  color: var(--primary-dark);
+}
+
+.backIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weekNavigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.btnWeekNav {
+  background: transparent;
+  border: 1px solid #dee2e6;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-medium);
+  transition: all 0.2s;
+}
+
+.btnWeekNav:hover {
+  background-color: var(--bg-light);
+  color: var(--primary-color);
+}
+
+.weekDateRange {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.calendarIcon {
+  color: var(--primary-color);
+  font-size: 1.25rem;
+}
+
+.weekDateRange h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.activityGridWrapper {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.loadingIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  padding: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .weekNavigation {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .weekDateRange {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}

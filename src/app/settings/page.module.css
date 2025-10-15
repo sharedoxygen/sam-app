@@ -1,0 +1,45 @@
+.settingsContainer {
+  display: flex;
+  min-height: 600px;
+}
+
+.settingsSidebar {
+  width: 200px;
+  border-right: 1px solid #e5e5e5;
+  flex-shrink: 0;
+}
+
+.settingsContent {
+  flex: 1;
+  padding: 20px;
+}
+
+.settingsTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.colorPreview {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background-color: var(--preview-color, #4a90e2);
+}
+
+.listGroupItemActive {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .settingsContainer {
+    flex-direction: column;
+  }
+
+  .settingsSidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e5e5e5;
+  }
+}

@@ -1,0 +1,728 @@
+/* Agent Guide Page Styles */
+
+.guideContainer {
+  min-height: 100vh;
+  background: var(--bg-light, #f8f9fa);
+  padding: 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--primary-color, #007bff);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  background: var(--primary-dark, #0056b3);
+  transform: translateY(-1px);
+}
+
+.headerActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-light, #f8f9fa);
+  color: var(--text-dark, #2c3e50);
+  border: 1px solid var(--border-color, #dee2e6);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background: var(--text-dark, #2c3e50);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.guideContent {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.guideHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--border-color, #dee2e6);
+}
+
+.guideIcon {
+  font-size: 3rem;
+  color: var(--primary-color, #007bff);
+  margin-bottom: 1rem;
+}
+
+.guideHeader h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-dark, #2c3e50);
+}
+
+.guideSubtitle {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--text-medium, #6c757d);
+  font-weight: 400;
+}
+
+.tableOfContents {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--bg-light, #f8f9fa);
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-color, #007bff);
+}
+
+.tableOfContents h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  color: var(--text-dark, #2c3e50);
+}
+
+.tocGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.tocSection h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-color, #007bff);
+}
+
+.tocSection ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style-type: none;
+}
+
+.tocSection li {
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.tocSection li::before {
+  content: '→';
+  position: absolute;
+  left: -1.2rem;
+  color: var(--primary-color, #007bff);
+  font-weight: bold;
+}
+
+.tocSection a {
+  color: var(--text-dark, #2c3e50);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.tocSection a:hover {
+  color: var(--primary-color, #007bff);
+  text-decoration: underline;
+}
+
+.quickAccess {
+  margin-bottom: 2rem;
+}
+
+.quickAccess h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  color: var(--text-dark, #2c3e50);
+}
+
+.roleCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.roleCard {
+  background: linear-gradient(135deg, var(--primary-color, #007bff), var(--primary-dark, #0056b3));
+  color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.roleCard h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.roleCard ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style-type: none;
+}
+
+.roleCard li {
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.roleCard li::before {
+  content: '✓';
+  position: absolute;
+  left: -1.2rem;
+  color: #90ee90;
+  font-weight: bold;
+}
+
+.roleCard a,
+.quickLink {
+  color: white;
+  text-decoration: none;
+  font-size: 0.95rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.roleCard a:hover,
+.quickLink:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* Interactive Navigation Styles */
+.tocLink {
+  background: none;
+  border: none;
+  color: var(--text-dark, #2c3e50);
+  text-decoration: none;
+  padding: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.tocLink:hover {
+  color: var(--primary-color, #007bff);
+  background: rgba(0, 123, 255, 0.1);
+  padding-left: 1rem;
+}
+
+.tocLink.active {
+  color: var(--primary-color, #007bff);
+  background: rgba(0, 123, 255, 0.15);
+  font-weight: 600;
+}
+
+.tocIcon {
+  margin-right: 0.5rem;
+  font-size: 0.8rem;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.tocLink:hover .tocIcon {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+.guideBody {
+  margin: 2rem 0;
+  line-height: 1.6;
+}
+
+/* Content Section Styles */
+.section {
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--border-color, #dee2e6);
+}
+
+.section:last-child {
+  border-bottom: none;
+}
+
+.section h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.8rem;
+  color: var(--text-dark, #2c3e50);
+  border-left: 4px solid var(--primary-color, #007bff);
+  padding-left: 1rem;
+}
+
+.section h3 {
+  margin: 1.5rem 0 1rem 0;
+  font-size: 1.3rem;
+  color: var(--primary-color, #007bff);
+}
+
+.section h4 {
+  margin: 1rem 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: var(--text-dark, #2c3e50);
+}
+
+.sectionContent {
+  color: var(--text-color, #495057);
+  line-height: 1.6;
+}
+
+.sectionContent ul {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.sectionContent li {
+  margin-bottom: 0.5rem;
+}
+
+.sectionContent ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.sectionContent ol li {
+  margin-bottom: 0.75rem;
+}
+
+/* Special Content Boxes */
+.tip {
+  background: rgba(40, 167, 69, 0.1);
+  border-left: 4px solid #28a745;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+}
+
+.warning {
+  background: rgba(255, 193, 7, 0.1);
+  border-left: 4px solid #ffc107;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+}
+
+.success {
+  background: rgba(0, 123, 255, 0.1);
+  border-left: 4px solid var(--primary-color, #007bff);
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+}
+
+.reminder {
+  background: rgba(108, 117, 125, 0.1);
+  border-left: 4px solid #6c757d;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+}
+
+.checklist {
+  background: rgba(40, 167, 69, 0.05);
+  border: 1px solid rgba(40, 167, 69, 0.2);
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+}
+
+.checklist h4 {
+  margin-top: 0;
+  color: #28a745;
+}
+
+.checklist ul {
+  margin-bottom: 0;
+}
+
+.workflow {
+  background: rgba(0, 123, 255, 0.05);
+  border: 1px solid rgba(0, 123, 255, 0.2);
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+}
+
+.workflow h4 {
+  margin-top: 0;
+  color: var(--primary-color, #007bff);
+}
+
+.bestPractice {
+  background: rgba(255, 193, 7, 0.05);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+}
+
+.bestPractice h4 {
+  margin-top: 0;
+  color: #ffc107;
+}
+
+.guideFrame {
+  width: 100%;
+  height: 800px;
+  border: none;
+  background: white;
+}
+
+.footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color, #dee2e6);
+  text-align: center;
+  color: var(--text-medium, #6c757d);
+}
+
+.footer p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.version {
+  font-size: 0.8rem !important;
+  opacity: 0.8;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .guideContainer {
+    padding: 0.5rem;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .headerActions {
+    justify-content: center;
+  }
+
+  .guideContent {
+    padding: 1rem;
+  }
+
+  .guideHeader h1 {
+    font-size: 2rem;
+  }
+
+  .guideSubtitle {
+    font-size: 1rem;
+  }
+
+  .tocGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .roleCards {
+    grid-template-columns: 1fr;
+  }
+
+  .guideFrame {
+    height: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  .actionButton span {
+    display: none;
+  }
+
+  .guideHeader h1 {
+    font-size: 1.5rem;
+  }
+
+  .guideSubtitle {
+    font-size: 0.9rem;
+  }
+
+  .guideFrame {
+    height: 500px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .header {
+    display: none;
+  }
+
+  .guideContainer {
+    background: white;
+    padding: 0;
+  }
+
+  .guideContent {
+    box-shadow: none;
+    padding: 1rem;
+  }
+
+  .guideFrame {
+    display: none;
+  }
+
+  .footer {
+    page-break-inside: avoid;
+  }
+
+  .roleCard {
+    background: white !important;
+    color: black !important;
+    border: 1px solid #ccc;
+  }
+
+  .roleCard a {
+    color: black !important;
+  }
+
+  .tocSection a {
+    color: black !important;
+  }
+}
+
+/* Dark Theme Support */
+[data-theme='dark'] .guideContent {
+  background: var(--card-bg, #2c3e50);
+  color: var(--text-light, #ffffff);
+}
+
+[data-theme='dark'] .tableOfContents {
+  background: var(--bg-dark, #34495e);
+}
+
+[data-theme='dark'] .guideFrame {
+  background: var(--card-bg, #2c3e50);
+}
+
+/* Accessibility */
+.backButton:focus,
+.actionButton:focus {
+  outline: 2px solid var(--primary-color, #007bff);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backButton,
+  .actionButton,
+  .tocSection a,
+  .roleCard a {
+    transition: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .roleCard {
+    border: 2px solid white;
+  }
+
+  .guideContent {
+    border: 2px solid var(--text-dark, #000);
+  }
+}
+
+/* Loading State */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.loadingIcon {
+  font-size: 2rem;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+/* Error State */
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-error);
+}
+
+.retryButton {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+  transition: background-color 0.2s;
+}
+
+.retryButton:hover {
+  background-color: var(--color-primary-dark);
+}
+
+/* Markdown Content Styling */
+.markdownContent {
+  max-width: none;
+  line-height: 1.6;
+}
+
+.markdownContent h1 {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+  border-bottom: 3px solid var(--color-primary);
+  padding-bottom: 0.5rem;
+}
+
+.markdownContent h2 {
+  font-size: 2rem;
+  color: var(--color-secondary);
+  margin: 2rem 0 1rem 0;
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: 0.5rem;
+}
+
+.markdownContent h3 {
+  font-size: 1.5rem;
+  color: var(--color-text-primary);
+  margin: 1.5rem 0 0.75rem 0;
+}
+
+.markdownContent h4 {
+  font-size: 1.25rem;
+  color: var(--color-text-primary);
+  margin: 1rem 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.markdownContent p {
+  margin-bottom: 1rem;
+  color: var(--color-text-secondary);
+}
+
+.markdownContent ul,
+.markdownContent ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.markdownContent li {
+  margin-bottom: 0.5rem;
+  color: var(--color-text-secondary);
+}
+
+.markdownContent strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.markdownContent code {
+  background-color: var(--color-background-secondary);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.875rem;
+}
+
+.markdownContent pre {
+  background-color: var(--color-background-secondary);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.markdownContent blockquote {
+  border-left: 4px solid var(--color-primary);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: var(--color-text-secondary);
+}
+
+.markdownContent table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.markdownContent th,
+.markdownContent td {
+  border: 1px solid var(--color-border);
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.markdownContent th {
+  background-color: var(--color-background-secondary);
+  font-weight: 600;
+}
+
+/* Print Styles for Markdown Content */
+@media print {
+  .markdownContent {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+
+  .markdownContent h1 {
+    font-size: 18pt;
+    page-break-after: avoid;
+  }
+
+  .markdownContent h2 {
+    font-size: 16pt;
+    page-break-after: avoid;
+  }
+
+  .markdownContent h3 {
+    font-size: 14pt;
+    page-break-after: avoid;
+  }
+}

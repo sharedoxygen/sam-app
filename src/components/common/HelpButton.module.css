@@ -1,0 +1,391 @@
+/* Help Button Container */
+.helpContainer {
+  position: relative;
+  display: inline-block;
+  z-index: 1000;
+}
+
+.helpContainer.header {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1050;
+}
+
+.helpContainer.footer {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 1050;
+}
+
+.helpContainer.sidebar {
+  position: relative;
+  margin: 0.5rem 0;
+}
+
+/* Help Button */
+.helpButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.helpButton:hover {
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.helpButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+}
+
+.helpLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* Help Overlay */
+.helpOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+  backdrop-filter: blur(2px);
+}
+
+/* Help Panel */
+.helpPanel {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: helpPanelSlideIn 0.3s ease-out;
+}
+
+@keyframes helpPanelSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Help Header */
+.helpHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 1px solid #dee2e6;
+}
+
+.helpTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.helpTitle h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.helpIcon {
+  color: #007bff;
+  font-size: 1.25rem;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  color: #6c757d;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  background: #e9ecef;
+  color: #495057;
+  border-color: #adb5bd;
+}
+
+/* Help Content */
+.helpContent {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.helpDescription {
+  margin: 0 0 1.5rem 0;
+  font-size: 1rem;
+  color: #6c757d;
+  line-height: 1.5;
+}
+
+.helpSection {
+  margin-bottom: 1.5rem;
+}
+
+.helpSection h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #495057;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tipsList,
+.featuresList {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style: none;
+}
+
+.tipsList li,
+.featuresList li {
+  position: relative;
+  margin-bottom: 0.5rem;
+  padding-left: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #495057;
+}
+
+.tipsList li::before {
+  content: '💡';
+  position: absolute;
+  left: -1rem;
+  top: 0;
+}
+
+.featuresList li::before {
+  content: '▸';
+  position: absolute;
+  left: -1rem;
+  top: 0;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.issuesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.issueItem {
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.issueItem strong {
+  color: #495057;
+}
+
+.roleSpecificTips {
+  padding: 1rem;
+  background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+
+.roleSpecificTips p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #495057;
+}
+
+.roleSpecificTips p:last-child {
+  margin-bottom: 0;
+}
+
+/* Help Actions */
+.helpActions {
+  padding: 1rem 1.5rem;
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}
+
+.guideButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.guideButton:hover {
+  background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+.externalIcon {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .helpContainer.header,
+  .helpContainer.footer {
+    position: fixed;
+    top: auto;
+    bottom: 1rem;
+    right: 1rem;
+  }
+
+  .helpPanel {
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100vh - 2rem);
+    margin: 1rem;
+  }
+
+  .helpHeader {
+    padding: 1rem;
+  }
+
+  .helpContent {
+    padding: 1rem;
+  }
+
+  .helpActions {
+    padding: 1rem;
+  }
+
+  .helpButton {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+
+  .helpLabel {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .helpOverlay {
+    padding: 0.5rem;
+  }
+
+  .helpPanel {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+  }
+
+  .helpButton {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .helpLabel {
+    display: none;
+  }
+}
+
+/* Focus and Accessibility */
+.helpButton:focus,
+.closeButton:focus,
+.guideButton:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.helpPanel {
+  /* Ensure panel is keyboard accessible */
+  min-height: 200px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .helpButton {
+    border: 2px solid currentColor;
+  }
+
+  .helpPanel {
+    border: 2px solid #000;
+  }
+
+  .closeButton {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .helpButton,
+  .closeButton,
+  .guideButton {
+    transition: none;
+  }
+
+  @keyframes helpPanelSlideIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+}

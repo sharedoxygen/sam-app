@@ -1,0 +1,312 @@
+/* Premium by Department Card Styles */
+.card {
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Header Styles */
+.header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.titleIcon {
+  color: var(--primary);
+  font-size: 1.125rem;
+}
+
+.totalPremium {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.totalLabel {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.totalAmount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--success);
+}
+
+/* Department Section Styles */
+.departments {
+  padding: 1rem;
+}
+
+.departmentSection {
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.departmentSection:last-child {
+  margin-bottom: 0;
+}
+
+.departmentSection:hover {
+  border-color: var(--primary-light);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.departmentHeader {
+  padding: 1rem;
+  background: var(--background-light);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.departmentHeader:hover {
+  background: var(--background-hover);
+}
+
+.departmentHeader:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.departmentInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.departmentMain {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.departmentName {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.departmentPremium {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--success);
+}
+
+.departmentStats {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.stat {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.statIcon {
+  font-size: 0.75rem;
+  color: var(--primary);
+}
+
+.expandIcon {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
+/* Agents List Styles */
+.agentsList {
+  background: var(--white);
+  border-top: 1px solid var(--border-light);
+  animation: slideDown 0.3s ease;
+}
+
+.agentsHeader {
+  display: grid;
+  grid-template-columns: 2fr 0.75fr 1fr 1fr;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--background-light);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.agentRow {
+  display: grid;
+  grid-template-columns: 2fr 0.75fr 1fr 1fr;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-lighter);
+  transition: background-color 0.2s ease;
+}
+
+.agentRow:hover {
+  background: var(--background-hover);
+}
+
+.agentRow:last-child {
+  border-bottom: none;
+}
+
+.agentInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.agentName {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.agentRole {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.agentSales,
+.agentAverage,
+.agentTotal {
+  font-weight: 500;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+}
+
+.noAgents {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Loading and Error States */
+.loadingState,
+.errorState {
+  padding: 3rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.loadingState {
+  color: var(--primary);
+}
+
+.errorState {
+  color: var(--danger);
+}
+
+/* Animations */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+  }
+
+  .headerContent {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .totalPremium {
+    align-items: flex-start;
+  }
+
+  .departmentStats {
+    gap: 1rem;
+    font-size: 0.813rem;
+  }
+
+  .agentsHeader,
+  .agentRow {
+    grid-template-columns: 1.5fr 0.75fr 1fr;
+    font-size: 0.813rem;
+  }
+
+  .agentsHeader span:last-child,
+  .agentRow span:last-child {
+    display: none;
+  }
+
+  .departmentMain {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.125rem;
+  }
+
+  .totalAmount {
+    font-size: 1.25rem;
+  }
+
+  .departmentName {
+    font-size: 1rem;
+  }
+
+  .departmentPremium {
+    font-size: 1.125rem;
+  }
+}

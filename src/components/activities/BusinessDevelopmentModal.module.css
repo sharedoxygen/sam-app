@@ -1,0 +1,473 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  padding: 1rem;
+}
+
+.modal-container {
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
+}
+
+.modal-content {
+  position: relative;
+}
+
+.modal-header {
+  padding: 2rem 2rem 1rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.modal-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 0.25rem 0;
+}
+
+.modal-subtitle {
+  font-size: 1rem;
+  color: var(--text-medium);
+  margin: 0 0 0.25rem 0;
+}
+
+.modal-date {
+  font-size: 0.85rem;
+  color: var(--primary-color);
+  margin: 0;
+  font-weight: 600;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-medium);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.close-button:hover {
+  background: var(--bg-light);
+  color: var(--text-dark);
+}
+
+.modal-body {
+  padding: 2rem;
+}
+
+.metrics-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.metric-section,
+.weekly-totals,
+.conversion-section {
+  background: var(--bg-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.weekly-totals {
+  background: linear-gradient(135deg, #fd7e14, #dc6413);
+  color: white;
+}
+
+.weekly-totals .metric-title {
+  color: white;
+}
+
+.weekly-totals .day-header {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.metric-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.day-column,
+.total-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.day-header {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.value-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.control-btn {
+  background: transparent;
+  color: var(--text-medium);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.control-btn:hover {
+  background: var(--bg-light);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.control-btn:active {
+  transform: scale(0.95);
+}
+
+.value-display {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  width: 48px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.total-display {
+  background: var(--bg-light);
+  border: 2px solid #fd7e14;
+  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fd7e14;
+}
+
+.weekly-totals .total-display {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: white;
+}
+
+.grand-total-display {
+  background: #fd7e14;
+  color: white;
+  border: 2px solid #dc6413;
+  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Conversion Section Styles */
+.conversion-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.stat-card {
+  background: var(--card-bg);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.stat-card.conversion-rate {
+  background: linear-gradient(135deg, #28a745, #218838);
+  color: white;
+  border: none;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.conversion-rate .stat-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.stat-value.rate {
+  color: white;
+}
+
+.modal-footer {
+  padding: 1.5rem 2rem 2rem 2rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.btn-secondary {
+  background: var(--bg-light);
+  color: var(--text-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--border-color);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #fd7e14, #dc6413);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-container {
+    margin: 0.5rem;
+    max-width: calc(100vw - 1rem);
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .days-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .day-column,
+  .total-column {
+    gap: 0.5rem;
+  }
+
+  .value-display {
+    width: 40px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+
+  .total-display,
+  .grand-total-display {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .control-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 0.85rem;
+  }
+
+  .conversion-stats {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+/* 
+  Dark mode :global selectors were removed as they should be handled in globals.scss 
+  or via more specific dark mode styles within this module if needed.
+*/
+
+/* ===== COMPREHENSIVE DARK MODE FIXES ===== */
+:global(html.theme-dark) .modal-container {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .modal-header {
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .modal-title {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .modal-subtitle {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .modal-date {
+  color: var(--primary-color) !important;
+}
+
+:global(html.theme-dark) .close-button {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .close-button:hover {
+  background: var(--bg-dark, #2d3748) !important;
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .metric-section,
+:global(html.theme-dark) .conversion-section {
+  background: var(--bg-dark, #2d3748) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .weekly-totals {
+  background: linear-gradient(135deg, #fd7e14, #dc6413) !important;
+}
+
+:global(html.theme-dark) .metric-title {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .weekly-totals .metric-title {
+  color: white !important;
+}
+
+:global(html.theme-dark) .day-header {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .weekly-totals .day-header {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+:global(html.theme-dark) .control-btn {
+  color: var(--text-medium) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .control-btn:hover {
+  background: var(--bg-dark, #2d3748) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+}
+
+:global(html.theme-dark) .value-display {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .total-display {
+  background: var(--bg-dark, #2d3748) !important;
+  color: #fd7e14 !important;
+}
+
+:global(html.theme-dark) .stat-card {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .stat-label {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .stat-value {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .modal-footer {
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .btn-secondary {
+  background: var(--bg-dark, #2d3748) !important;
+  color: var(--text-dark) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .btn-secondary:hover {
+  background: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .btn-primary {
+  background: linear-gradient(135deg, #fd7e14, #dc6413) !important;
+  color: white !important;
+}

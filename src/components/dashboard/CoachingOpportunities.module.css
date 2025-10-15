@@ -1,0 +1,339 @@
+.coachingOpportunities {
+  background-color: var(--card-bg, #fff);
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--card-shadow, 0 2px 4px rgba(0, 0, 0, 0.05));
+  padding: 1.5rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.headerIcon {
+  color: var(--warning-color, #ffc107);
+  font-size: 1.25rem;
+}
+
+.title {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 600;
+  color: var(--text-dark, #212529);
+  margin: 0;
+}
+
+.insightsSummary {
+  padding: 1rem;
+  background: linear-gradient(
+    135deg,
+    var(--info-bg-light, rgba(13, 202, 240, 0.1)),
+    var(--primary-bg-light, rgba(13, 110, 253, 0.1))
+  );
+  border-radius: var(--border-radius-md, 8px);
+  border-left: 4px solid var(--info-color, #0dcaf0);
+  margin-bottom: 1.5rem;
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.5;
+  color: var(--text-dark, #212529);
+}
+
+.opportunitiesList {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.opportunityCard {
+  padding: 1rem;
+  background-color: var(--bg-light, #f8f9fa);
+  border-radius: var(--border-radius-md, 8px);
+  border-left: 4px solid transparent;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+}
+
+.opportunityCard.high {
+  border-left-color: var(--danger-color, #dc3545);
+  background-color: var(--danger-bg-light, rgba(220, 53, 69, 0.05));
+}
+
+.opportunityCard.medium {
+  border-left-color: var(--warning-color, #ffc107);
+  background-color: var(--warning-bg-light, rgba(255, 193, 7, 0.05));
+}
+
+.opportunityCard.low {
+  border-left-color: var(--info-color, #17a2b8);
+  background-color: var(--info-bg-light, rgba(23, 162, 184, 0.05));
+}
+
+.opportunityCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.opportunityHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.opportunityInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.opportunityIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 0.875rem;
+}
+
+.opportunityIcon.high {
+  background-color: var(--danger-bg-light, rgba(220, 53, 69, 0.1));
+  color: var(--danger-color, #dc3545);
+}
+
+.opportunityIcon.medium {
+  background-color: var(--warning-bg-light, rgba(255, 193, 7, 0.1));
+  color: var(--warning-color, #ffc107);
+}
+
+.opportunityIcon.low {
+  background-color: var(--info-bg-light, rgba(23, 162, 184, 0.1));
+  color: var(--info-color, #17a2b8);
+}
+
+.opportunityDetails {
+  flex: 1;
+}
+
+.agentName {
+  font-size: var(--font-size-base, 1rem);
+  font-weight: 600;
+  color: var(--text-dark, #212529);
+  margin: 0 0 0.25rem 0;
+}
+
+.opportunityType {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.opportunityType.high {
+  color: var(--danger-color, #dc3545);
+}
+
+.opportunityType.medium {
+  color: var(--warning-color, #ffc107);
+}
+
+.opportunityType.low {
+  color: var(--info-color, #17a2b8);
+}
+
+.severityBadge {
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius-sm, 4px);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.severityBadge.high {
+  background-color: var(--danger-color, #dc3545);
+  color: #fff;
+}
+
+.severityBadge.medium {
+  background-color: var(--warning-color, #ffc107);
+  color: #000;
+}
+
+.severityBadge.low {
+  background-color: var(--info-color, #17a2b8);
+  color: #fff;
+}
+
+.metricValue {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.metricLabel {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-medium, #6c757d);
+  margin: 0;
+}
+
+.metricNumber {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 700;
+  color: var(--text-dark, #212529);
+}
+
+.trendIndicator {
+  font-size: 0.75rem;
+}
+
+.trendIndicator.negative {
+  color: var(--danger-color, #dc3545);
+}
+
+.trendIndicator.positive {
+  color: var(--success-color, #198754);
+}
+
+.recommendation {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: var(--bg-white, #fff);
+  border-radius: var(--border-radius-sm, 4px);
+  border: 1px solid var(--border-light, #e9ecef);
+}
+
+.recommendationIcon {
+  color: var(--primary-color, #0d6efd);
+  margin-top: 0.125rem;
+  flex-shrink: 0;
+}
+
+.recommendationText {
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.4;
+  color: var(--text-dark, #212529);
+  margin: 0;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--text-muted, #6c757d);
+}
+
+.loading p {
+  margin-top: 1rem;
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--text-muted, #6c757d);
+}
+
+.emptyState .emptyIcon {
+  font-size: 3rem;
+  color: var(--success-color, #198754);
+  margin-bottom: 1rem;
+}
+
+.emptyState h3 {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 600;
+  color: var(--text-dark, #212529);
+  margin: 0 0 0.5rem 0;
+}
+
+.emptyState p {
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color, #0d6efd);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius-md, 6px);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  text-decoration: none;
+  margin-top: 0.75rem;
+}
+
+.actionButton:hover {
+  background-color: var(--primary-hover, #0b5ed7);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.25);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .coachingOpportunities {
+    padding: 1rem;
+  }
+
+  .opportunityHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .opportunityInfo {
+    width: 100%;
+  }
+
+  .severityBadge {
+    align-self: flex-start;
+  }
+
+  .metricValue {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 576px) {
+  .opportunityCard {
+    padding: 0.75rem;
+  }
+
+  .opportunityIcon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+
+  .recommendation {
+    padding: 0.5rem;
+  }
+
+  .actionButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

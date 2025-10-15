@@ -1,0 +1,338 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Activity {
+  id            Int            @id @default(autoincrement())
+  duration      Int?
+  notes         String?
+  date          DateTime
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime
+  userId        Int
+  clientId      Int?
+  insuranceType InsuranceType?
+  status        String?
+  value         Float?
+  type          ActivityType
+  Client        Client?        @relation(fields: [clientId], references: [id])
+  User          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@index([type])
+  @@index([userId, date])
+}
+
+model Client {
+  id               Int                @id @default(autoincrement())
+  name             String
+  email            String?            @unique
+  phone            String?            @unique
+  company          String?
+  notes            String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime
+  isActive         Boolean            @default(true)
+  Activity         Activity[]
+  ClientAssignment ClientAssignment[]
+  Task             Task[]
+
+  @@index([email])
+  @@index([isActive])
+  @@index([name])
+}
+
+model ClientAssignment {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  clientId   Int
+  assignedAt DateTime @default(now())
+  isActive   Boolean  @default(true)
+  Client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, clientId])
+  @@index([clientId])
+  @@index([userId])
+}
+
+model Feedback {
+  id          Int            @id @default(autoincrement())
+  userId      Int
+  name        String
+  pageTitle   String
+  type        FeedbackType
+  description String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime
+  status      FeedbackStatus @default(OPEN)
+  User        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([status])
+  @@index([type])
+  @@index([userId])
+}
+
+model PerformanceTarget {
+  id                                   Int      @id @default(autoincrement())
+  userId                               Int
+  weekStartDate                        DateTime
+  peopleContacted                      Int      @default(0)
+  lifeSalesConversations               Int      @default(0)
+  sales                                Int      @default(0)
+  referralRequests                     Int      @default(0)
+  premiumAmount                        Decimal  @default(0) @db.Decimal(12, 2)
+  createdAt                            DateTime @default(now())
+  updatedAt                            DateTime
+  setById                              Int?
+  googleReviews                        Int      @default(0)
+  multiLine                            Int      @default(0)
+  rawNew                               Int      @default(0)
+  User_PerformanceTarget_setByIdToUser User?    @relation("PerformanceTarget_setByIdToUser", fields: [setById], references: [id])
+  User_PerformanceTarget_userIdToUser  User     @relation("PerformanceTarget_userIdToUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekStartDate])
+  @@index([setById])
+  @@index([userId, weekStartDate])
+}
+
+model SalesMetric {
+  id         Int      @id @default(autoincrement())
+  weekNumber Int
+  year       Int
+  calls      Int      @default(0)
+  meetings   Int      @default(0)
+  followUps  Int      @default(0)
+  emails     Int      @default(0)
+  sales      Int      @default(0)
+  revenue    Decimal  @default(0) @db.Decimal(12, 2)
+  date       DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime
+  userId     Int
+  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekNumber, year])
+  @@index([userId, date])
+}
+
+model Task {
+  id               Int        @id @default(autoincrement())
+  title            String
+  description      String?
+  isCompleted      Boolean    @default(false)
+  dueDate          DateTime?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime
+  userId           Int
+  category         String?
+  lastContactDate  DateTime?
+  nextFollowUpDate DateTime?
+  tags             String[]   @default([])
+  clientId         Int?
+  status           TaskStatus @default(PENDING)
+  priority         Priority   @default(MEDIUM)
+  estimatedValue   Decimal?   @db.Decimal(12, 2)
+  Client           Client?    @relation(fields: [clientId], references: [id])
+  User             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@index([priority])
+  @@index([status])
+  @@index([userId, dueDate])
+}
+
+model User {
+  id                                                Int                 @id @default(autoincrement())
+  username                                          String              @unique
+  password                                          String
+  name                                              String
+  email                                             String?             @unique
+  role                                              Role                @default(SALES)
+  createdAt                                         DateTime            @default(now())
+  updatedAt                                         DateTime
+  managerId                                         Int?
+  isActive                                          Boolean             @default(true)
+  Activity                                          Activity[]
+  AuditLog                                          AuditLog[]
+  ClientAssignment                                  ClientAssignment[]
+  Feedback                                          Feedback[]
+  PerformanceTarget_PerformanceTarget_setByIdToUser PerformanceTarget[] @relation("PerformanceTarget_setByIdToUser")
+  PerformanceTarget_PerformanceTarget_userIdToUser  PerformanceTarget[] @relation("PerformanceTarget_userIdToUser")
+  SalesMetric                                       SalesMetric[]
+  Task                                              Task[]
+  User                                              User?               @relation("UserToUser", fields: [managerId], references: [id])
+  other_User                                        User[]              @relation("UserToUser")
+  WeeklyActivity                                    WeeklyActivity[]
+  WeeklyForecast                                    WeeklyForecast[]
+
+  @@index([isActive])
+  @@index([managerId])
+  @@index([role])
+}
+
+model WeeklyActivity {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  date          DateTime
+  weekStartDate DateTime
+  data          Json
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime
+  User          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, weekStartDate])
+}
+
+model WeeklyForecast {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  weekStartDate DateTime
+  forecast      Json
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime
+  User          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekStartDate])
+  @@index([userId, weekStartDate])
+}
+
+model FeedbackResponse {
+  id         Int      @id @default(autoincrement())
+  feedbackId Int
+  adminId    Int
+  message    String
+  isInternal Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([feedbackId])
+  @@index([adminId])
+  @@index([createdAt])
+}
+
+model SystemNotification {
+  id          Int                  @id @default(autoincrement())
+  title       String
+  message     String
+  type        NotificationType
+  priority    NotificationPriority @default(NORMAL)
+  targetRoles String[]             @default([])
+  isActive    Boolean              @default(true)
+  expiresAt   DateTime?
+  createdById Int
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  @@index([isActive])
+  @@index([type])
+  @@index([priority])
+  @@index([createdAt])
+  @@index([expiresAt])
+}
+
+model SystemNotificationRead {
+  id             Int      @id @default(autoincrement())
+  notificationId Int
+  userId         Int
+  readAt         DateTime @default(now())
+
+  @@unique([notificationId, userId])
+  @@index([userId])
+  @@index([notificationId])
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  tableName String
+  recordId  Int
+  action    String
+  changes   Json?
+  userId    Int
+  userAgent String?
+  ipAddress String?
+  endpoint  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tableName, recordId])
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+enum ActivityType {
+  CALL
+  MEETING
+  EMAIL
+  FOLLOW_UP
+  SALE
+  QUOTE
+  GOOGLE_REVIEW
+}
+
+enum FeedbackStatus {
+  OPEN
+  CLOSED
+  REVIEW
+  IMPLEMENTED
+  IN_PROGRESS
+}
+
+enum FeedbackType {
+  ENHANCEMENT
+  BUG
+  GENERAL
+}
+
+enum InsuranceType {
+  AUTOMOTIVE
+  LIFE_HEALTH
+  PROPERTY_FIRE
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Role {
+  ADMIN
+  SALES_LEAD
+  SERVICE_LEAD
+  SALES
+  SERVICE
+  OFFICE_MANAGER
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum NotificationType {
+  MAINTENANCE
+  FEATURE
+  UPDATE
+  ANNOUNCEMENT
+  ALERT
+  GENERAL
+}
+
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}

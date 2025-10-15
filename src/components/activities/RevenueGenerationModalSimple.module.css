@@ -1,0 +1,790 @@
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.modalContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.modalContent {
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  position: relative;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  border-bottom: 1px solid var(--border-color);
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  color: white;
+  border-radius: 16px 16px 0 0;
+}
+
+.headerContent {
+  flex: 1;
+}
+
+.modalTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: white;
+}
+
+.modalSubtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+.modalDate {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  margin: 0.25rem 0 0 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-medium);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  background: var(--bg-light);
+  color: var(--text-dark);
+}
+
+.modalBody {
+  padding: 2.5rem;
+  max-height: calc(90vh - 200px);
+  overflow-y: auto;
+}
+
+/* Summary Card */
+.summaryCard {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 2.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.summaryIcon {
+  font-size: 3.5rem;
+  line-height: 1;
+}
+
+.summaryContent {
+  flex: 1;
+}
+
+.summaryValue {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.summaryLabel {
+  font-size: 1.1rem;
+  color: var(--text-medium);
+  margin: 0.25rem 0 0 0;
+}
+
+.summaryMetrics {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.summaryIndicators {
+  display: flex;
+  gap: 1rem;
+}
+
+.indicatorStat {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--text-medium);
+}
+
+.premiumAmount {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.15rem 0.25rem;
+  background: none;
+  border-radius: 4px;
+  color: var(--text-dark);
+  font-size: 0.95rem;
+}
+
+.premiumLabel {
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.premiumValue {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.indicatorBadge {
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: white;
+}
+
+.indicatorBadge.rn {
+  background-color: #dc3545;
+}
+
+.indicatorBadge.ml {
+  background-color: #6610f2;
+}
+
+/* Premium Input Section */
+.premiumInputSection {
+  margin-top: 1rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 12px;
+  border: 2px solid #28a745;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.1);
+  transition: all 0.2s ease;
+}
+
+.premiumInputSection:hover {
+  border-color: #20c997;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15);
+}
+
+.premiumInputLabel {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.premiumInputControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.currencySymbol {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  background: none;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: none;
+}
+
+.premiumInput {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: right;
+  background: var(--card-bg);
+  color: var(--text-dark);
+  transition: all 0.2s ease;
+  box-shadow: none;
+  height: 40px;
+}
+
+.premiumInput:focus {
+  outline: none;
+  border-color: #20c997;
+  box-shadow:
+    0 0 0 3px rgba(40, 167, 69, 0.2),
+    inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.premiumInput::placeholder {
+  color: #6c757d;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+/* Product Lines */
+.productLines {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .productLines {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.productCard {
+  background: var(--bg-light);
+  border-radius: 14px;
+  padding: 1.75rem;
+  border: 2px solid var(--border-color);
+  transition: all 0.2s ease;
+  min-width: 0;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.productCard:nth-child(1) {
+  border-color: #007bff;
+  background: linear-gradient(135deg, #e3f0ff 0%, #f8f9fa 100%);
+}
+
+.productCard:nth-child(2) {
+  border-color: #28a745;
+  background: linear-gradient(135deg, #e6f9ed 0%, #f8f9fa 100%);
+}
+
+.productCard:nth-child(3) {
+  border-color: #fd7e14;
+  background: linear-gradient(135deg, #fff4e6 0%, #f8f9fa 100%);
+}
+
+.productHeader {
+  margin-bottom: 1.5rem;
+}
+
+.productInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.productIcon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.productName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 0.25rem 0;
+  line-height: 1.2;
+}
+
+.productTarget {
+  font-size: 0.9rem;
+  color: var(--text-medium);
+  margin: 0;
+}
+
+/* Input Section */
+.inputSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inputControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.controlBtn {
+  background: var(--card-bg);
+  color: var(--text-dark);
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+}
+
+.controlBtn:hover:not(:disabled) {
+  background: var(--bg-light);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: scale(1.05);
+}
+
+.controlBtn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.controlBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.valueInput {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100px;
+  height: 50px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: white;
+  color: var(--text-dark);
+}
+
+.recordItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.recordLabel {
+  font-size: 0.85rem;
+  color: var(--text-medium);
+}
+
+/* Progress Section */
+.progressSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-light);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.progressFill.withDynamicColor {
+  background-color: var(--progress-color, var(--primary-color));
+}
+
+.progressText {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 0.75rem;
+  display: block;
+}
+
+.progressText.withDynamicColor {
+  color: var(--progress-color, var(--primary-color));
+}
+
+/* Indicators Section */
+.indicatorControls {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.indicatorBtn {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+}
+
+.indicatorBtn:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+.indicatorBtn:active {
+  transform: translateY(0);
+}
+
+.indicatorBtn.active {
+  border-color: var(--primary-color);
+  background: var(--primary-light, rgba(0, 123, 255, 0.05));
+}
+
+.indicatorCount {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-medium);
+}
+
+/* Footer */
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.5rem;
+  padding: 2rem 2.5rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-light);
+  border-radius: 0 0 16px 16px;
+}
+
+.btnSecondary {
+  background: var(--bg-light);
+  color: var(--text-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnSecondary:hover {
+  background: var(--border-color);
+}
+
+.btnPrimary {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btnPrimary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: var(--primary-dark, #0056b3);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+  .modalContainer {
+    max-width: calc(100vw - 2rem);
+    margin: 1rem;
+  }
+
+  .modalHeader,
+  .modalBody,
+  .modalFooter {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .summaryCard {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .valueInput {
+    flex-direction: column;
+  }
+}
+
+.compactPremiumInput {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-light, #f8f9fa);
+  border-radius: 8px;
+  border: 1px solid #28a745;
+  box-shadow: none;
+  transition: none;
+}
+
+.compactPremiumInput .premiumInputLabel {
+  font-size: 0.8rem;
+  margin-bottom: 0.375rem;
+  font-weight: 500;
+}
+
+.compactPremiumInput .premiumInputControls {
+  gap: 0.375rem;
+}
+
+.compactPremiumInput .currencySymbol {
+  font-size: 0.9rem;
+  padding: 0.375rem;
+}
+
+.compactPremiumInput .premiumInput {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  height: 32px;
+  min-width: 120px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.premiumInputError {
+  color: #dc3545;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.premiumInputError {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-left: 0.5rem;
+  font-weight: 500;
+}
+
+/* ===== COMPREHENSIVE DARK MODE FIXES ===== */
+:global(html.theme-dark) .modalContainer,
+:global(html.theme-dark) .modalContent {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .modalHeader {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .modalTitle,
+:global(html.theme-dark) .modalSubtitle,
+:global(html.theme-dark) .modalDate {
+  color: white !important;
+}
+
+:global(html.theme-dark) .closeButton {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+:global(html.theme-dark) .closeButton:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+:global(html.theme-dark) .summaryCard {
+  background: var(--bg-dark, #2d3748) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .summaryValue,
+:global(html.theme-dark) .summaryLabel {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .productCard {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .productCard:nth-child(1) {
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), var(--card-bg)) !important;
+  border-color: #007bff !important;
+}
+
+:global(html.theme-dark) .productCard:nth-child(2) {
+  background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), var(--card-bg)) !important;
+  border-color: #28a745 !important;
+}
+
+:global(html.theme-dark) .productCard:nth-child(3) {
+  background: linear-gradient(135deg, rgba(253, 126, 20, 0.1), var(--card-bg)) !important;
+  border-color: #fd7e14 !important;
+}
+
+:global(html.theme-dark) .productName,
+:global(html.theme-dark) .productTarget {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .controlBtn {
+  background: var(--card-bg) !important;
+  color: var(--text-dark) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .controlBtn:hover:not(:disabled) {
+  background: var(--bg-light) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+}
+
+:global(html.theme-dark) .valueInput {
+  background: var(--card-bg) !important;
+  color: var(--text-dark) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .recordLabel {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .progressBar {
+  background: var(--bg-dark, #2d3748) !important;
+}
+
+:global(html.theme-dark) .progressText {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .premiumInputSection {
+  background: var(--bg-dark, #2d3748) !important;
+  border-color: #28a745 !important;
+}
+
+:global(html.theme-dark) .premiumInputLabel {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .currencySymbol {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .premiumInput {
+  background: var(--card-bg) !important;
+  color: var(--text-dark) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .premiumInput::placeholder {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .indicatorBtn {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .indicatorBtn:hover {
+  border-color: var(--primary-color) !important;
+}
+
+:global(html.theme-dark) .indicatorBtn.active {
+  border-color: var(--primary-color) !important;
+  background: rgba(74, 144, 226, 0.1) !important;
+}
+
+:global(html.theme-dark) .indicatorCount {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .modalFooter {
+  background: var(--bg-dark, #2d3748) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .btnSecondary {
+  background: var(--bg-dark, #2d3748) !important;
+  color: var(--text-dark) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .btnSecondary:hover {
+  background: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .btnPrimary {
+  background: var(--primary-color) !important;
+  color: white !important;
+}
+
+:global(html.theme-dark) .btnPrimary:hover {
+  background: var(--primary-dark) !important;
+}
+
+:global(html.theme-dark) .compactPremiumInput {
+  background: var(--bg-dark, #2d3748) !important;
+  border-color: #28a745 !important;
+}
+
+:global(html.theme-dark) .compactPremiumInput .premiumInput {
+  background: var(--card-bg) !important;
+  color: var(--text-dark) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .premiumInputError {
+  color: var(--danger-color) !important;
+}

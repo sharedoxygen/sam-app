@@ -1,0 +1,2447 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faChevronLeft,
+  faChevronRight,
+  faCalendarWeek,
+  faSave,
+  faSpinner,
+  faCheckCircle,
+  faExclamationTriangle,
+  faChartLine,
+  faBullseye,
+  faArrowTrendUp,
+  faUsers,
+  faUser,
+  faEdit,
+  faEye,
+  faBullseye as faTarget,
+  faPhone,
+  faTag,
+  faLayerGroup,
+} from '@fortawesome/free-solid-svg-icons';
+
+import BackButton from '@/components/common/BackButton';
+import { useAuth } from '@/lib/auth/AuthContext';
+import ModernPerformanceCharts from '@/components/weekly/ModernPerformanceCharts';
+import styles from './page.module.css';
+import '@/styles/agent-performance.css';
+import { getPageHeaderForRole } from '@/lib/constants/roleConfig';
+
+type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
+
+// Weekly performance data structure
+type WeeklyMetrics = {
+  peopleContacted: number;
+  lifeSalesConversations: number;
+  sales: number;
+  referralRequests: number;
+  rawNew?: number;       // Raw New indicator count
+  multiLine?: number;    // Multi-line indicator count
+};
+
+type AgentPerformance = {
+  userId: string;
+  userName: string;
+  userRole: string;
+  forecast: WeeklyMetrics;
+  actual: WeeklyMetrics;
+  performanceMetrics: {
+    peopleContacted: { actual: number; forecast: number; percentage: number; variance: number };
+    lifeSalesConversations: {
+      actual: number;
+      forecast: number;
+      percentage: number;
+      variance: number;
+    };
+    sales: { actual: number; forecast: number; percentage: number; variance: number };
+    referralRequests: { actual: number; forecast: number; percentage: number; variance: number };
+  };
+};
+
+type TeamPerformance = {
+  teamSummary: WeeklyMetrics & { totalAgents: number };
+  agents: AgentPerformance[];
+};
+
+export default function WeeklyPerformance() {
+  const { user } = useAuth();
+  const [weekOffset, setWeekOffset] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+  const [lastSaved, setLastSaved] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'forecast' | 'actual' | 'comparison'>('comparison');
+  const [teamViewMode, setTeamViewMode] = useState<'team' | 'forecast' | 'comparison'>('team');
+  const [currentView, setCurrentView] = useState<'personal' | 'team'>('personal');
+
+  // Performance data
+  const [individualPerformance, setIndividualPerformance] = useState<AgentPerformance | null>(null);
+  const [teamPerformance, setTeamPerformance] = useState<TeamPerformance | null>(null);
+  const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
+  const [editingAgent, setEditingAgent] = useState<AgentPerformance | null>(null);
+  const [showForecastModal, setShowForecastModal] = useState(false);
+  const [showAgentDetailModal, setShowAgentDetailModal] = useState(false);
+  const [selectedAgentDetails, setSelectedAgentDetails] = useState<AgentPerformance | null>(null);
+
+  // Get role-based access permissions for agent interaction analytics
+  const getAccessLevel = () => {
+    if (!user?.role) return 'none';
+
+    const role = user.role.toUpperCase();
+    // Admin can see all agents across all teams and departments
+    if (role === 'ADMIN') return 'all';
+    // Managers (Leads) can see all agents in their department/region (conceptually)
+    // For this simplified model, Leads see their team.
+    if (role === 'SALES_LEAD' || role === 'SERVICE_LEAD') return 'team'; // Was 'department' for SUPERVISOR
+    // Individual agents can only see their own performance
+    return 'individual';
+  };
+
+  // Check if user can view team analytics (multiple agents)
+  const canViewTeamAnalytics = () => {
+    if (!user?.role) return false;
+    const role = user.role.toUpperCase();
+    return (
+      role === 'ADMIN' ||
+      role === 'SALES_LEAD' || // Added
+      role === 'SERVICE_LEAD' // Added
+      // Removed role === 'SUPERVISOR'
+    );
+  };
+
+  // Get analytics scope description based on role
+  const getAnalyticsScope = () => {
+    if (!user?.role) return 'Your Interaction Analytics';
+
+    const role = user.role.toUpperCase();
+    if (role === 'ADMIN') return 'Organization-wide Agent Interaction Analytics';
+    // Removed SUPERVISOR case
+    if (role === 'SALES_LEAD') return 'Sales Team Interaction Analytics';
+    if (role === 'SERVICE_LEAD') return 'Service Team Interaction Analytics';
+    return 'Your Agent Interaction Analytics';
+  };
+
+  // Get detailed analytics description based on role
+  const getAnalyticsDescription = () => {
+    if (!user?.role) return 'Analytics derived from your daily interactions and activities';
+
+    const role = user.role.toUpperCase();
+    if (role === 'ADMIN') {
+      return 'Comprehensive analytics calculated from all agent interactions across the entire organization';
+    }
+    // Removed SUPERVISOR case
+    if (role === 'SALES_LEAD') {
+      return "Performance metrics calculated from your sales team's daily interactions and activities";
+    }
+    if (role === 'SERVICE_LEAD') {
+      return "Service metrics derived from your team's customer interactions and support activities";
+    }
+    return 'Performance analytics calculated from your daily interactions, calls, and activities';
+  };
+
+  // Check if user can edit forecasts
+  const canEditForecasts = () => {
+    if (!user?.role) return false;
+    // All users can edit their own forecasts
+    // Managers can also edit others' forecasts (handled in team management views)
+    return true;
+  };
+
+  const accessLevel = getAccessLevel();
+  const hasTeamAccess = canViewTeamAnalytics();
+  const canEdit = canEditForecasts();
+
+  // Get role-based page configuration
+  const pageHeader = getPageHeaderForRole(user?.role, 'weeklyPerformance');
+
+  // Get role-based page title
+  const getPageTitle = () => {
+    return 'Agent Performance';
+  };
+
+  // Get page subtitle based on analytics scope
+  const getPageSubtitle = () => {
+    return getAnalyticsScope();
+  };
+
+  const pageTitle = getPageTitle();
+
+  // BackButton component is now imported directly
+
+  // Get week start and end dates for display
+  const getWeekDates = (offset = 0) => {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const diff = now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+
+    const weekStart = new Date(now);
+    weekStart.setDate(diff + offset * 7);
+    // Ensure we're working with start of day in local timezone
+    weekStart.setHours(0, 0, 0, 0);
+
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 4);
+
+    const formatDate = (date: Date) => {
+      const options: Intl.DateTimeFormatOptions = {
+        weekday: 'long',
+        month: 'short',
+        day: 'numeric',
+      };
+      return date.toLocaleDateString('en-US', options);
+    };
+
+    const formatDateShort = (date: Date) => {
+      const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+      return date.toLocaleDateString('en-US', options);
+    };
+
+    // Format the date for API calls - ensure local date
+    const formatForAPI = (date: Date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    return {
+      startDate: formatDate(weekStart),
+      endDate: formatDate(weekEnd),
+      startDateShort: formatDateShort(weekStart),
+      endDateShort: formatDateShort(weekEnd),
+      weekStartDate: formatForAPI(weekStart),
+      weekEndDate: formatForAPI(weekEnd),
+    };
+  };
+
+  const { startDate, endDate, startDateShort, endDateShort, weekStartDate } =
+    getWeekDates(weekOffset);
+
+  // Navigate to previous/next week
+  const navigateWeek = (direction: number) => {
+    setWeekOffset((prev) => prev + direction);
+    loadWeekData(weekOffset + direction);
+  };
+
+  // Go to current week
+  const goToCurrentWeek = () => {
+    setWeekOffset(0);
+    loadWeekData(0);
+  };
+
+  const isCurrentWeek = () => weekOffset === 0;
+
+  // Open forecast editing modal
+  const openForecastEditor = (agent: AgentPerformance) => {
+    setEditingAgent({ ...agent });
+    setShowForecastModal(true);
+  };
+
+  // Close forecast editing modal
+  const closeForecastEditor = () => {
+    setEditingAgent(null);
+    setShowForecastModal(false);
+  };
+
+  // Open agent detail modal
+  const openAgentDetailModal = (agent: AgentPerformance) => {
+    setSelectedAgentDetails(agent);
+    setShowAgentDetailModal(true);
+  };
+
+  // Close agent detail modal
+  const closeAgentDetailModal = () => {
+    setSelectedAgentDetails(null);
+    setShowAgentDetailModal(false);
+  };
+
+  // Update editing agent's forecast
+  const updateEditingForecast = (field: keyof WeeklyMetrics, value: number) => {
+    if (!editingAgent) return;
+
+    setEditingAgent({
+      ...editingAgent,
+      forecast: {
+        ...editingAgent.forecast,
+        [field]: value,
+      },
+    });
+  };
+
+  // Save agent's forecast
+  const saveAgentForecast = async () => {
+    if (!editingAgent) return;
+
+    await saveForecast(editingAgent.forecast, editingAgent.userId);
+    closeForecastEditor();
+  };
+
+  // Load week data - always load personal data, conditionally load team data
+  const loadWeekData = async (offset: number) => {
+    if (!user?.id) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const { weekStartDate } = getWeekDates(offset);
+
+      // Always load personal performance data for the logged-in user
+      const personalResponse = await fetch(
+        `/api/weekly-performance?weekStartDate=${weekStartDate}&userId=${user.id}`
+      );
+
+      if (!personalResponse.ok) {
+        throw new Error('Failed to fetch personal performance data');
+      }
+
+      const personalData = await personalResponse.json();
+      setIndividualPerformance({
+        userId: String(user.id),
+        userName: user.name || user.username,
+        userRole: user.role,
+        forecast: personalData.forecast,
+        actual: personalData.actual,
+        performanceMetrics: personalData.performanceMetrics,
+      });
+
+      // If user has team access, also load team performance data
+      if (hasTeamAccess) {
+        const teamResponse = await fetch(
+          `/api/weekly-performance/team?weekStartDate=${weekStartDate}&managerId=${user.id}`
+        );
+
+        if (!teamResponse.ok) {
+          throw new Error('Failed to fetch team performance data');
+        }
+
+        const teamData = await teamResponse.json();
+        setTeamPerformance(teamData);
+      }
+
+      setLastSaved(new Date().toISOString());
+    } catch (err) {
+      setError('Failed to load weekly performance data');
+      console.error('Load error:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Save forecast data (only for individual users)
+  const saveForecast = async (forecast: WeeklyMetrics, agentId?: string) => {
+    if (!user?.id) {
+      setSaveStatus('error');
+      setError('User not authenticated. Please log in again.');
+      return;
+    }
+
+    setSaveStatus('saving');
+    setError(null);
+
+    try {
+      const { weekStartDate } = getWeekDates(weekOffset);
+      const targetUserId = agentId || user.id;
+
+      const response = await fetch('/api/weekly-forecast', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: targetUserId,
+          weekStartDate,
+          forecast,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Save failed with status:', response.status, 'Error:', errorText);
+        throw new Error(`Failed to save forecast: ${response.status} ${errorText}`);
+      }
+
+      setLastSaved(new Date().toISOString());
+      setSaveStatus('saved');
+
+      // Reload data to reflect changes
+      loadWeekData(weekOffset);
+
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } catch (err) {
+      setSaveStatus('error');
+      console.error('Save error:', err);
+
+      if (err instanceof Error && err.message.includes('401')) {
+        setError('Session expired. Please log in again.');
+      } else if (err instanceof Error && err.message.includes('403')) {
+        setError('Insufficient permissions. You can only edit your own forecasts.');
+      } else {
+        setError('Failed to save forecast data. Please try again.');
+      }
+    }
+  };
+
+  // Get save status display
+  const getSaveStatusDisplay = () => {
+    switch (saveStatus) {
+      case 'saving':
+        return { icon: faSpinner, text: 'Saving...', className: 'saving' };
+      case 'saved':
+        return { icon: faCheckCircle, text: 'Saved', className: 'saved' };
+      case 'error':
+        return { icon: faExclamationTriangle, text: 'Save Failed', className: 'error' };
+      default:
+        return null;
+    }
+  };
+
+  // Load data when component mounts or user changes
+  useEffect(() => {
+    if (user?.id) {
+      loadWeekData(weekOffset);
+    }
+  }, [user?.id, weekOffset]);
+
+  // Set default view modes
+  useEffect(() => {
+    setViewMode('comparison');
+    setTeamViewMode('team');
+    setCurrentView('personal'); // Always start with personal view
+  }, []);
+
+  // Render performance metrics card
+  const renderMetricsCard = (
+    title: string,
+    metrics: WeeklyMetrics,
+    performanceData?: any,
+    isTeamSummary = false
+  ) => {
+    // Helper function to format metric values
+    const formatMetricValue = (value: number) => {
+      if (value === 0) return '0';
+      return value.toLocaleString();
+    };
+
+    // Helper function to get performance status
+    const getPerformanceStatus = (percentage: number) => {
+      if (percentage >= 100) return { class: 'success', icon: faCheckCircle };
+      if (percentage >= 80) return { class: 'warning', icon: faExclamationTriangle };
+      return { class: 'danger', icon: faExclamationTriangle };
+    };
+
+    return (
+      <div className="metrics-card">
+        <div className="metrics-header">
+          <div className="header-content">
+            <h3 className="card-title">
+              <FontAwesomeIcon icon={isTeamSummary ? faUsers : faChartLine} />
+              {title}
+            </h3>
+            {isTeamSummary && teamPerformance && (
+              <p className="card-subtitle">
+                Aggregated analytics across {teamPerformance.teamSummary.totalAgents} team members
+              </p>
+            )}
+            {!isTeamSummary && !performanceData && (
+              <p className="card-subtitle">
+                Target metrics derived from planned agent interactions
+              </p>
+            )}
+            {!isTeamSummary && performanceData && (
+              <p className="card-subtitle">
+                Analytics calculated from actual agent interactions vs targets
+              </p>
+            )}
+          </div>
+          {isTeamSummary && teamPerformance && (
+            <div className="team-badge">
+              <FontAwesomeIcon icon={faUsers} />
+              {teamPerformance.teamSummary.totalAgents} agents
+            </div>
+          )}
+        </div>
+        <div className="metrics-grid">
+          <div className="metric-item contacts">
+            <div className="metric-icon">
+              <FontAwesomeIcon icon={faPhone} />
+            </div>
+            <div className="metric-content">
+              <div className="metric-label">People Contacted</div>
+              <div className="metric-value">{formatMetricValue(metrics.peopleContacted)}</div>
+              {performanceData && (
+                <div
+                  className={`metric-performance ${getPerformanceStatus(performanceData.peopleContacted.percentage).class}`}
+                >
+                  <FontAwesomeIcon
+                    icon={getPerformanceStatus(performanceData.peopleContacted.percentage).icon}
+                  />
+                  {performanceData.peopleContacted.percentage.toFixed(1)}% of target
+                </div>
+              )}
+              {!performanceData && <div className="metric-target">Planned interaction target</div>}
+            </div>
+          </div>
+          <div className="metric-item conversations">
+            <div className="metric-icon">
+              <FontAwesomeIcon icon={faUser} />
+            </div>
+            <div className="metric-content">
+              <div className="metric-label">Life/Sales Conversations</div>
+              <div className="metric-value">
+                {formatMetricValue(metrics.lifeSalesConversations)}
+              </div>
+              {performanceData && (
+                <div
+                  className={`metric-performance ${getPerformanceStatus(performanceData.lifeSalesConversations.percentage).class}`}
+                >
+                  <FontAwesomeIcon
+                    icon={
+                      getPerformanceStatus(performanceData.lifeSalesConversations.percentage).icon
+                    }
+                  />
+                  {performanceData.lifeSalesConversations.percentage.toFixed(1)}% of target
+                </div>
+              )}
+              {!performanceData && <div className="metric-target">Planned interaction target</div>}
+            </div>
+          </div>
+          <div className="metric-item sales">
+            <div className="metric-icon">
+              <FontAwesomeIcon icon={faChartLine} />
+            </div>
+            <div className="metric-content">
+              <div className="metric-label">Sales Closed</div>
+              <div className="metric-value">{formatMetricValue(metrics.sales)}</div>
+              {performanceData && (
+                <div
+                  className={`metric-performance ${getPerformanceStatus(performanceData.sales.percentage).class}`}
+                >
+                  <FontAwesomeIcon
+                    icon={getPerformanceStatus(performanceData.sales.percentage).icon}
+                  />
+                  {performanceData.sales.percentage.toFixed(1)}% of target
+                </div>
+              )}
+              {!performanceData && <div className="metric-target">Planned interaction target</div>}
+            </div>
+          </div>
+          <div className="metric-item referrals">
+            <div className="metric-icon">
+              <FontAwesomeIcon icon={faArrowTrendUp} />
+            </div>
+            <div className="metric-content">
+              <div className="metric-label">Referral Requests</div>
+              <div className="metric-value">{formatMetricValue(metrics.referralRequests)}</div>
+              {performanceData && (
+                <div
+                  className={`metric-performance ${getPerformanceStatus(performanceData.referralRequests.percentage).class}`}
+                >
+                  <FontAwesomeIcon
+                    icon={getPerformanceStatus(performanceData.referralRequests.percentage).icon}
+                  />
+                  {performanceData.referralRequests.percentage.toFixed(1)}% of target
+                </div>
+              )}
+              {!performanceData && <div className="metric-target">Planned interaction target</div>}
+            </div>
+          </div>
+        </div>
+
+        {/* Indicators Section for Raw New and Multi-line */}
+        {(metrics.rawNew !== undefined || metrics.multiLine !== undefined) && (
+          <div className="indicators-section">
+            <h4 className="indicators-title">Record Indicators</h4>
+            <div className="indicators-grid">
+              {metrics.rawNew !== undefined && metrics.rawNew > 0 && (
+                <div className="indicator-item">
+                  <div className="indicator-icon rn">
+                    <FontAwesomeIcon icon={faTag} />
+                  </div>
+                  <div className="indicator-content">
+                    <div className="indicator-label">Raw New (RN)</div>
+                    <div className="indicator-value">
+                      <span className="indicator-count">{metrics.rawNew}</span>
+                      {metrics.sales > 0 && (
+                        <span className="indicator-percentage">
+                          ({Math.round((metrics.rawNew / metrics.sales) * 100)}% of sales)
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+              {metrics.multiLine !== undefined && metrics.multiLine > 0 && (
+                <div className="indicator-item">
+                  <div className="indicator-icon ml">
+                    <FontAwesomeIcon icon={faLayerGroup} />
+                  </div>
+                  <div className="indicator-content">
+                    <div className="indicator-label">Multi-line (ML)</div>
+                    <div className="indicator-value">
+                      <span className="indicator-count">{metrics.multiLine}</span>
+                      {metrics.sales > 0 && (
+                        <span className="indicator-percentage">
+                          ({Math.round((metrics.multiLine / metrics.sales) * 100)}% of sales)
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="weekly-performance-container">
+      {/* Page header */}
+      <div className="page-header">
+        <div className="page-header-content">
+          <div className="page-title-section">
+            <h1 className="page-title">{pageHeader.title}</h1>
+            <p className="page-subtitle">{pageHeader.subtitle}</p>
+            <p className="page-description">{pageHeader.description}</p>
+          </div>
+          <BackButton />
+        </div>
+      </div>
+
+      {/* Week Navigation */}
+      <div className="week-navigation">
+        <div className="week-navigation-top">
+          <div className="week-controls">
+            <button className="week-nav-btn" onClick={() => navigateWeek(-1)}>
+              <FontAwesomeIcon icon={faChevronLeft} />
+            </button>
+
+            <div className="current-week-display">
+              <div className="week-icon">
+                <FontAwesomeIcon icon={faCalendarWeek} />
+              </div>
+              <div className="week-info">
+                <h2 className="display-week">
+                  Week of {startDateShort} - {endDateShort}
+                </h2>
+                <div className="week-meta">
+                  <span className="week-range">
+                    {startDate} to {endDate}
+                  </span>
+                  {!isCurrentWeek() && (
+                    <button className="btn-current-week" onClick={goToCurrentWeek}>
+                      Go to Current Week
+                    </button>
+                  )}
+                  {/* Add button to go to seed data start date */}
+                  <button
+                    className="btn-seed-week"
+                    onClick={() => {
+                      // Calculate weeks between now and Jan 2, 2025
+                      // Use proper date construction to avoid timezone issues
+                      const seedStartDate = new Date(2025, 0, 2); // January 2, 2025 (month is 0-indexed)
+                      const currentWeekStart = new Date();
+                      const currentDay = currentWeekStart.getDay();
+                      const currentDiff =
+                        currentWeekStart.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
+                      currentWeekStart.setDate(currentDiff);
+                      currentWeekStart.setHours(0, 0, 0, 0);
+
+                      const timeDiff = seedStartDate.getTime() - currentWeekStart.getTime();
+                      const weeksDiff = Math.round(timeDiff / (7 * 24 * 60 * 60 * 1000));
+                      setWeekOffset(weeksDiff);
+                      loadWeekData(weeksDiff);
+                    }}
+                  >
+                    Go to Jan 2, 2025 (Seed Data)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <button className="week-nav-btn" onClick={() => navigateWeek(1)}>
+              <FontAwesomeIcon icon={faChevronRight} />
+            </button>
+          </div>
+
+          {/* View Mode Toggle and Save Controls */}
+          <div className="controls-section">
+            <div className="view-mode-toggle">
+              {hasTeamAccess ? (
+                <>
+                  {/* Personal/Team Toggle */}
+                  <button
+                    className={`mode-btn ${currentView === 'personal' ? 'active' : ''}`}
+                    onClick={() => setCurrentView('personal')}
+                  >
+                    <FontAwesomeIcon icon={faUser} />
+                    My Performance
+                  </button>
+                  <button
+                    className={`mode-btn ${currentView === 'team' ? 'active' : ''}`}
+                    onClick={() => setCurrentView('team')}
+                  >
+                    <FontAwesomeIcon icon={faUsers} />
+                    Agent Analytics
+                  </button>
+                </>
+              ) : (
+                <>
+                  {/* Individual User View Modes */}
+                  <button
+                    className={`mode-btn ${viewMode === 'forecast' ? 'active' : ''}`}
+                    onClick={() => setViewMode('forecast')}
+                  >
+                    <FontAwesomeIcon icon={faBullseye} />
+                    Forecast
+                  </button>
+                  <button
+                    className={`mode-btn ${viewMode === 'actual' ? 'active' : ''}`}
+                    onClick={() => setViewMode('actual')}
+                  >
+                    <FontAwesomeIcon icon={faChartLine} />
+                    Actual
+                  </button>
+                  <button
+                    className={`mode-btn ${viewMode === 'comparison' ? 'active' : ''}`}
+                    onClick={() => setViewMode('comparison')}
+                  >
+                    <FontAwesomeIcon icon={faArrowTrendUp} />
+                    Comparison
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Secondary View Mode Toggle for Team Managers */}
+            {hasTeamAccess && (
+              <div className="secondary-view-toggle">
+                {currentView === 'personal' ? (
+                  <>{/* ... forecast, actual, comparison buttons for personal view ... */}</>
+                ) : (
+                  <>
+                    <button
+                      className={`mode-btn ${teamViewMode === 'team' ? 'active' : ''}`}
+                      onClick={() => setTeamViewMode('team')}
+                    >
+                      <FontAwesomeIcon icon={faUsers} />
+                      Team Overview {/* << RENAMED HERE */}
+                    </button>
+                    <button
+                      className={`mode-btn ${teamViewMode === 'forecast' ? 'active' : ''}`}
+                      onClick={() => setTeamViewMode('forecast')}
+                    >
+                      <FontAwesomeIcon icon={faBullseye} />
+                      Forecast Management
+                    </button>
+                    <button
+                      className={`mode-btn ${teamViewMode === 'comparison' ? 'active' : ''}`}
+                      onClick={() => setTeamViewMode('comparison')}
+                    >
+                      <FontAwesomeIcon icon={faArrowTrendUp} />
+                      Analytics Comparison
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+
+            <div className="save-controls">
+              <div className="save-status">
+                {!user?.id && (
+                  <div className="save-indicator error">
+                    <FontAwesomeIcon icon={faExclamationTriangle} />
+                    <span>Not authenticated</span>
+                  </div>
+                )}
+                {user?.id && getSaveStatusDisplay() && (
+                  <div className={`save-indicator ${getSaveStatusDisplay()?.className}`}>
+                    <FontAwesomeIcon
+                      icon={getSaveStatusDisplay()?.icon || faSave}
+                      className={saveStatus === 'saving' ? 'spinning' : ''}
+                    />
+                    <span>{getSaveStatusDisplay()?.text}</span>
+                  </div>
+                )}
+                {lastSaved && (
+                  <div className="last-saved">
+                    Last updated: {new Date(lastSaved).toLocaleTimeString()}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {error && (
+          <div className="error-notice">
+            <span className="notice-icon">⚠️</span>
+            <span>{error}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Main Content Area */}
+      <div className="performance-content">
+        {isLoading ? (
+          <div className="loading-indicator">
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <p>Loading weekly performance data...</p>
+          </div>
+        ) : (
+          <>
+            {/* Personal Performance View - Available to all users */}
+            {(!hasTeamAccess || currentView === 'personal') && individualPerformance && (
+              <div className="individual-performance">
+                {/* Forecast View */}
+                {viewMode === 'forecast' && (
+                  <div className="forecast-view">
+                    <div className="elegant-forecast-card">
+                      <div className="forecast-header">
+                        <div className="header-content">
+                          <h3 className="forecast-title">
+                            <FontAwesomeIcon icon={faTarget} />
+                            {individualPerformance.forecast.peopleContacted === 0 &&
+                              individualPerformance.forecast.lifeSalesConversations === 0 &&
+                              individualPerformance.forecast.sales === 0 &&
+                              individualPerformance.forecast.referralRequests === 0
+                              ? 'Create Your Weekly Interaction Forecast'
+                              : 'Edit Your Weekly Interaction Forecast'}
+                          </h3>
+                          <p className="forecast-subtitle">
+                            Set your planned interaction targets for this week based on your goals
+                            and capacity
+                          </p>
+                        </div>
+                        <div className="forecast-status">
+                          {saveStatus === 'saved' && (
+                            <div className="status-indicator success">
+                              <FontAwesomeIcon icon={faCheckCircle} />
+                              <span>Saved</span>
+                            </div>
+                          )}
+                          {saveStatus === 'saving' && (
+                            <div className="status-indicator saving">
+                              <FontAwesomeIcon icon={faSpinner} className="spinning" />
+                              <span>Saving...</span>
+                            </div>
+                          )}
+                          {saveStatus === 'error' && (
+                            <div className="status-indicator error">
+                              <FontAwesomeIcon icon={faExclamationTriangle} />
+                              <span>Error</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="forecast-form-grid">
+                        {/* People Contacted */}
+                        <div className="forecast-input-group">
+                          <div className="input-header">
+                            <div className="input-icon contacts">
+                              <FontAwesomeIcon icon={faPhone} />
+                            </div>
+                            <div className="input-info">
+                              <label className="input-label">People Contacted</label>
+                              <span className="input-description">
+                                Total number of people you plan to contact
+                              </span>
+                            </div>
+                          </div>
+                          <div className="input-wrapper">
+                            <input
+                              type="number"
+                              className="forecast-input"
+                              value={individualPerformance.forecast.peopleContacted}
+                              onChange={(e) => {
+                                const newForecast = {
+                                  ...individualPerformance.forecast,
+                                  peopleContacted: parseInt(e.target.value) || 0,
+                                };
+                                setIndividualPerformance({
+                                  ...individualPerformance,
+                                  forecast: newForecast,
+                                });
+                              }}
+                              placeholder="0"
+                              min="0"
+                            />
+                            <span className="input-unit">contacts</span>
+                          </div>
+                        </div>
+
+                        {/* Life/Sales Conversations */}
+                        <div className="forecast-input-group">
+                          <div className="input-header">
+                            <div className="input-icon conversations">
+                              <FontAwesomeIcon icon={faUser} />
+                            </div>
+                            <div className="input-info">
+                              <label className="input-label">Life/Sales Conversations</label>
+                              <span className="input-description">
+                                Meaningful conversations you plan to have
+                              </span>
+                            </div>
+                          </div>
+                          <div className="input-wrapper">
+                            <input
+                              type="number"
+                              className="forecast-input"
+                              value={individualPerformance.forecast.lifeSalesConversations}
+                              onChange={(e) => {
+                                const newForecast = {
+                                  ...individualPerformance.forecast,
+                                  lifeSalesConversations: parseInt(e.target.value) || 0,
+                                };
+                                setIndividualPerformance({
+                                  ...individualPerformance,
+                                  forecast: newForecast,
+                                });
+                              }}
+                              placeholder="0"
+                              min="0"
+                            />
+                            <span className="input-unit">conversations</span>
+                          </div>
+                        </div>
+
+                        {/* Sales Closed */}
+                        <div className="forecast-input-group">
+                          <div className="input-header">
+                            <div className="input-icon sales">
+                              <FontAwesomeIcon icon={faChartLine} />
+                            </div>
+                            <div className="input-info">
+                              <label className="input-label">Sales Closed</label>
+                              <span className="input-description">
+                                Number of sales you plan to close
+                              </span>
+                            </div>
+                          </div>
+                          <div className="input-wrapper">
+                            <input
+                              type="number"
+                              className="forecast-input"
+                              value={individualPerformance.forecast.sales}
+                              onChange={(e) => {
+                                const newForecast = {
+                                  ...individualPerformance.forecast,
+                                  sales: parseInt(e.target.value) || 0,
+                                };
+                                setIndividualPerformance({
+                                  ...individualPerformance,
+                                  forecast: newForecast,
+                                });
+                              }}
+                              placeholder="0"
+                              min="0"
+                            />
+                            <span className="input-unit">sales</span>
+                          </div>
+                        </div>
+
+                        {/* Referral Requests */}
+                        <div className="forecast-input-group">
+                          <div className="input-header">
+                            <div className="input-icon referrals">
+                              <FontAwesomeIcon icon={faArrowTrendUp} />
+                            </div>
+                            <div className="input-info">
+                              <label className="input-label">Referral Requests</label>
+                              <span className="input-description">
+                                Referrals you plan to request
+                              </span>
+                            </div>
+                          </div>
+                          <div className="input-wrapper">
+                            <input
+                              type="number"
+                              className="forecast-input"
+                              value={individualPerformance.forecast.referralRequests}
+                              onChange={(e) => {
+                                const newForecast = {
+                                  ...individualPerformance.forecast,
+                                  referralRequests: parseInt(e.target.value) || 0,
+                                };
+                                setIndividualPerformance({
+                                  ...individualPerformance,
+                                  forecast: newForecast,
+                                });
+                              }}
+                              placeholder="0"
+                              min="0"
+                            />
+                            <span className="input-unit">referrals</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="forecast-actions">
+                        <div className="forecast-summary">
+                          <div className="summary-item">
+                            <span className="summary-label">Total Planned Interactions:</span>
+                            <span className="summary-value">
+                              {individualPerformance.forecast.peopleContacted +
+                                individualPerformance.forecast.lifeSalesConversations +
+                                individualPerformance.forecast.sales +
+                                individualPerformance.forecast.referralRequests}
+                            </span>
+                          </div>
+                        </div>
+                        <button
+                          className="save-forecast-btn"
+                          onClick={() => saveForecast(individualPerformance.forecast)}
+                          disabled={saveStatus === 'saving' || !user?.id}
+                        >
+                          <FontAwesomeIcon
+                            icon={saveStatus === 'saving' ? faSpinner : faSave}
+                            className={saveStatus === 'saving' ? 'spinning' : ''}
+                          />
+                          {saveStatus === 'saving' ? 'Saving Forecast...' : 'Save Forecast'}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Current Forecast Display */}
+                    <div className="current-forecast">
+                      {renderMetricsCard(
+                        'Planned Interaction Targets',
+                        individualPerformance.forecast
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Actual View */}
+                {viewMode === 'actual' && (
+                  <div className="actual-view">
+                    <h2>Your Weekly Actual Performance</h2>
+                    {renderMetricsCard('Actual Performance', individualPerformance.actual)}
+                  </div>
+                )}
+
+                {/* Comparison View */}
+                {viewMode === 'comparison' && (
+                  <div className="comparison-view-individual">
+                    {/* Elegant Comparison Card */}
+                    <div className="elegant-comparison-card">
+                      <div className="comparison-header">
+                        <div className="header-content">
+                          <h3 className="comparison-title">
+                            <FontAwesomeIcon icon={faChartLine} />
+                            Performance Analytics Overview
+                          </h3>
+                          <p className="comparison-subtitle">
+                            Analytics calculated from actual agent interactions vs planned targets
+                          </p>
+                        </div>
+                        <div className="overall-performance">
+                          <div className="overall-score">
+                            {Math.round(
+                              (individualPerformance.performanceMetrics.peopleContacted.percentage +
+                                individualPerformance.performanceMetrics.lifeSalesConversations
+                                  .percentage +
+                                individualPerformance.performanceMetrics.sales.percentage +
+                                individualPerformance.performanceMetrics.referralRequests
+                                  .percentage) /
+                              4
+                            )}
+                            %
+                          </div>
+                          <div className="overall-label">Overall Achievement</div>
+                        </div>
+                      </div>
+
+                      <div className="comparison-metrics-grid">
+                        {/* People Contacted */}
+                        <div className="comparison-metric-item">
+                          <div className="metric-header">
+                            <div className="metric-icon contacts">
+                              <FontAwesomeIcon icon={faPhone} />
+                            </div>
+                            <div className="metric-info">
+                              <h4 className="metric-title">People Contacted</h4>
+                              <div className="metric-achievement">
+                                <span
+                                  className={`achievement-percentage ${individualPerformance.performanceMetrics.peopleContacted
+                                    .percentage >= 100
+                                    ? 'success'
+                                    : individualPerformance.performanceMetrics.peopleContacted
+                                      .percentage >= 80
+                                      ? 'warning'
+                                      : 'danger'
+                                    }`}
+                                >
+                                  {individualPerformance.performanceMetrics.peopleContacted.percentage.toFixed(
+                                    1
+                                  )}
+                                  %
+                                </span>
+                                <span className="achievement-label">achievement</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="metric-comparison">
+                            <div className="comparison-bar">
+                              <div className="target-bar">
+                                <div
+                                  ref={(el) => {
+                                    if (el) {
+                                      el.style.width = '100%';
+                                    }
+                                  }}
+                                  className={`target-fill ${styles.targetFill}`}
+                                ></div>
+                                <span className="target-value">
+                                  {individualPerformance.forecast.peopleContacted}
+                                </span>
+                                <span className="target-label">Target</span>
+                              </div>
+                              <div className="actual-bar">
+                                <div
+                                  ref={(el) => {
+                                    if (el) {
+                                      el.style.width = `${Math.min(individualPerformance.performanceMetrics.peopleContacted.percentage, 100)}%`;
+                                    }
+                                  }}
+                                  className={`actual-fill ${styles.actualFill}`}
+                                ></div>
+                                <span className="actual-value">
+                                  {individualPerformance.actual.peopleContacted}
+                                </span>
+                                <span className="actual-label">Actual</span>
+                              </div>
+                            </div>
+                            <div className="variance-indicator">
+                              <span
+                                className={`variance ${individualPerformance.performanceMetrics.peopleContacted.variance >= 0 ? 'positive' : 'negative'}`}
+                              >
+                                {individualPerformance.performanceMetrics.peopleContacted
+                                  .variance >= 0
+                                  ? '+'
+                                  : ''}
+                                {individualPerformance.performanceMetrics.peopleContacted.variance}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Life/Sales Conversations */}
+                        <div className="comparison-metric-item">
+                          <div className="metric-header">
+                            <div className="metric-icon conversations">
+                              <FontAwesomeIcon icon={faUser} />
+                            </div>
+                            <div className="metric-info">
+                              <h4 className="metric-title">Life/Sales Conversations</h4>
+                              <div className="metric-achievement">
+                                <span
+                                  className={`achievement-percentage ${individualPerformance.performanceMetrics.lifeSalesConversations
+                                    .percentage >= 100
+                                    ? 'success'
+                                    : individualPerformance.performanceMetrics
+                                      .lifeSalesConversations.percentage >= 80
+                                      ? 'warning'
+                                      : 'danger'
+                                    }`}
+                                >
+                                  {individualPerformance.performanceMetrics.lifeSalesConversations.percentage.toFixed(
+                                    1
+                                  )}
+                                  %
+                                </span>
+                                <span className="achievement-label">achievement</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="metric-comparison">
+                            <div className="comparison-bar">
+                              <div className="target-bar">
+                                <div
+                                  ref={(el) => {
+                                    if (el) {
+                                      el.style.width = '100%';
+                                    }
+                                  }}
+                                  className={`target-fill ${styles.targetFill}`}
+                                ></div>
+                                <span className="target-value">
+                                  {individualPerformance.forecast.lifeSalesConversations}
+                                </span>
+                                <span className="target-label">Target</span>
+                              </div>
+                              <div className="actual-bar">
+                                <div
+                                  ref={(el) => {
+                                    if (el) {
+                                      el.style.width = `${Math.min(individualPerformance.performanceMetrics.lifeSalesConversations.percentage, 100)}%`;
+                                    }
+                                  }}
+                                  className={`actual-fill ${styles.actualFill}`}
+                                ></div>
+                                <span className="actual-value">
+                                  {individualPerformance.actual.lifeSalesConversations}
+                                </span>
+                                <span className="actual-label">Actual</span>
+                              </div>
+                            </div>
+                            <div className="variance-indicator">
+                              <span
+                                className={`variance ${individualPerformance.performanceMetrics.lifeSalesConversations.variance >= 0 ? 'positive' : 'negative'}`}
+                              >
+                                {individualPerformance.performanceMetrics.lifeSalesConversations
+                                  .variance >= 0
+                                  ? '+'
+                                  : ''}
+                                {
+                                  individualPerformance.performanceMetrics.lifeSalesConversations
+                                    .variance
+                                }
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Sales Closed */}
+                        <div className="comparison-metric-item">
+                          <div className="metric-header">
+                            <div className="metric-icon sales">
+                              <FontAwesomeIcon icon={faChartLine} />
+                            </div>
+                            <div className="metric-info">
+                              <h4 className="metric-title">Sales Closed</h4>
+                              <div className="metric-achievement">
+                                <span
+                                  className={`achievement-percentage ${individualPerformance.performanceMetrics.sales.percentage >= 100
+                                    ? 'success'
+                                    : individualPerformance.performanceMetrics.sales.percentage >=
+                                      80
+                                      ? 'warning'
+                                      : 'danger'
+                                    }`}
+                                >
+                                  {individualPerformance.performanceMetrics.sales.percentage.toFixed(
+                                    1
+                                  )}
+                                  %
+                                </span>
+                                <span className="achievement-label">achievement</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="metric-comparison">
+                            <div className="comparison-bar">
+                              <div className="target-bar">
+                                <div
+                                  ref={(el) => {
+                                    if (el) {
+                                      el.style.width = '100%';
+                                    }
+                                  }}
+                                  className={`target-fill ${styles.targetFill}`}
+                                ></div>
+                                <span className="target-value">
+                                  {individualPerformance.forecast.sales}
+                                </span>
+                                <span className="target-label">Target</span>
+                              </div>
+                              <div className="actual-bar">
+                                <div
+                                  ref={(el) => {
+                                    if (el) {
+                                      el.style.width = `${Math.min(individualPerformance.performanceMetrics.sales.percentage, 100)}%`;
+                                    }
+                                  }}
+                                  className={`actual-fill ${styles.actualFill}`}
+                                ></div>
+                                <span className="actual-value">
+                                  {individualPerformance.actual.sales}
+                                </span>
+                                <span className="actual-label">Actual</span>
+                              </div>
+                            </div>
+                            <div className="variance-indicator">
+                              <span
+                                className={`variance ${individualPerformance.performanceMetrics.sales.variance >= 0 ? 'positive' : 'negative'}`}
+                              >
+                                {individualPerformance.performanceMetrics.sales.variance >= 0
+                                  ? '+'
+                                  : ''}
+                                {individualPerformance.performanceMetrics.sales.variance}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Referral Requests */}
+                        <div className="comparison-metric-item">
+                          <div className="metric-header">
+                            <div className="metric-icon referrals">
+                              <FontAwesomeIcon icon={faArrowTrendUp} />
+                            </div>
+                            <div className="metric-info">
+                              <h4 className="metric-title">Referral Requests</h4>
+                              <div className="metric-achievement">
+                                <span
+                                  className={`achievement-percentage ${individualPerformance.performanceMetrics.referralRequests
+                                    .percentage >= 100
+                                    ? 'success'
+                                    : individualPerformance.performanceMetrics.referralRequests
+                                      .percentage >= 80
+                                      ? 'warning'
+                                      : 'danger'
+                                    }`}
+                                >
+                                  {individualPerformance.performanceMetrics.referralRequests.percentage.toFixed(
+                                    1
+                                  )}
+                                  %
+                                </span>
+                                <span className="achievement-label">achievement</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="metric-comparison">
+                            <div className="comparison-bar">
+                              <div className="target-bar">
+                                <div
+                                  ref={(el) => {
+                                    if (el) {
+                                      el.style.width = '100%';
+                                    }
+                                  }}
+                                  className={`target-fill ${styles.targetFill}`}
+                                ></div>
+                                <span className="target-value">
+                                  {individualPerformance.forecast.referralRequests}
+                                </span>
+                                <span className="target-label">Target</span>
+                              </div>
+                              <div className="actual-bar">
+                                <div
+                                  ref={(el) => {
+                                    if (el) {
+                                      el.style.width = `${Math.min(individualPerformance.performanceMetrics.referralRequests.percentage, 100)}%`;
+                                    }
+                                  }}
+                                  className={`actual-fill ${styles.actualFill}`}
+                                ></div>
+                                <span className="actual-value">
+                                  {individualPerformance.actual.referralRequests}
+                                </span>
+                                <span className="actual-label">Actual</span>
+                              </div>
+                            </div>
+                            <div className="variance-indicator">
+                              <span
+                                className={`variance ${individualPerformance.performanceMetrics.referralRequests.variance >= 0 ? 'positive' : 'negative'}`}
+                              >
+                                {individualPerformance.performanceMetrics.referralRequests
+                                  .variance >= 0
+                                  ? '+'
+                                  : ''}
+                                {individualPerformance.performanceMetrics.referralRequests.variance}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Modern Performance Charts */}
+                    <div className="charts-wrapper">
+                      <ModernPerformanceCharts
+                        forecast={individualPerformance.forecast}
+                        actual={individualPerformance.actual}
+                        performanceMetrics={individualPerformance.performanceMetrics}
+                        userRole={user?.role || 'AGENT'}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Team Performance View - Only for managers viewing team */}
+            {hasTeamAccess &&
+              currentView === 'team' &&
+              teamViewMode === 'team' &&
+              teamPerformance && (
+                <div className="team-performance">
+                  <div className="team-overview">
+                    <div className="section-header">
+                      <h2 className="section-title">
+                        <FontAwesomeIcon icon={faUsers} />
+                        Agent Interaction Analytics
+                      </h2>
+                      <p className="section-subtitle">
+                        Comprehensive analytics of all agent interactions and performance metrics
+                        for {teamPerformance.teamSummary.totalAgents}{' '}
+                        {accessLevel === 'all' ? 'agents across all teams' : 'team members'}
+                      </p>
+                    </div>
+                    {renderMetricsCard(
+                      'Aggregated Interaction Analytics',
+                      teamPerformance.teamSummary,
+                      null,
+                      true
+                    )}
+                  </div>
+
+                  <div className="agents-performance-section">
+                    <div className="section-header">
+                      <h3 className="section-title">
+                        <FontAwesomeIcon icon={faChartLine} />
+                        Individual Agent Analytics
+                      </h3>
+                      <p className="section-subtitle">
+                        Detailed interaction analytics and performance metrics for each agent
+                      </p>
+                    </div>
+                    <div className="agents-grid">
+                      {teamPerformance.agents.map((agent) => (
+                        <div key={agent.userId} className="agent-performance-card">
+                          <div className="agent-card-header">
+                            <div className="agent-info">
+                              <div className="agent-avatar">
+                                <FontAwesomeIcon icon={faUser} />
+                              </div>
+                              <div className="agent-details">
+                                <h4 className="agent-name">{agent.userName}</h4>
+                                <span className="agent-role">{agent.userRole}</span>
+                              </div>
+                            </div>
+                            <div className="agent-actions">
+                              <button
+                                className="btn-view-details"
+                                onClick={() => openAgentDetailModal(agent)}
+                              >
+                                <FontAwesomeIcon icon={faEye} />
+                                View Details
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="agent-metrics-grid">
+                            <div className="metric-item">
+                              <div className="metric-header">
+                                <span className="metric-label">People Contacted</span>
+                                <span
+                                  className={`performance-badge ${agent.performanceMetrics.peopleContacted.percentage >= 100 ? 'success' : agent.performanceMetrics.peopleContacted.percentage >= 80 ? 'warning' : 'danger'}`}
+                                >
+                                  {agent.performanceMetrics.peopleContacted.percentage}%
+                                </span>
+                              </div>
+                              <div className="metric-value">{agent.actual.peopleContacted}</div>
+                              <div className="metric-target">
+                                Target: {agent.forecast.peopleContacted}
+                              </div>
+                              <div className="metric-progress">
+                                <div className="progress-bar">
+                                  <div
+                                    className="progress-fill"
+                                    ref={(el) => {
+                                      if (el) {
+                                        el.style.width = `${Math.min(agent.performanceMetrics.peopleContacted.percentage, 100)}%`;
+                                        el.style.background = agent.performanceMetrics.peopleContacted.percentage >= 100
+                                          ? '#28a745'
+                                          : agent.performanceMetrics.peopleContacted.percentage >= 80
+                                            ? '#fd7e14'
+                                            : '#dc3545';
+                                      }
+                                    }}
+                                  ></div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="metric-item">
+                              <div className="metric-header">
+                                <span className="metric-label">Conversations</span>
+                                <span
+                                  className={`performance-badge ${agent.performanceMetrics.lifeSalesConversations.percentage >= 100 ? 'success' : agent.performanceMetrics.lifeSalesConversations.percentage >= 80 ? 'warning' : 'danger'}`}
+                                >
+                                  {agent.performanceMetrics.lifeSalesConversations.percentage}%
+                                </span>
+                              </div>
+                              <div className="metric-value">
+                                {agent.actual.lifeSalesConversations}
+                              </div>
+                              <div className="metric-target">
+                                Target: {agent.forecast.lifeSalesConversations}
+                              </div>
+                              <div className="metric-progress">
+                                <div className="progress-bar">
+                                  <div
+                                    className="progress-fill"
+                                    ref={(el) => {
+                                      if (el) {
+                                        el.style.width = `${Math.min(agent.performanceMetrics.lifeSalesConversations.percentage, 100)}%`;
+                                        el.style.background = agent.performanceMetrics.lifeSalesConversations.percentage >= 100
+                                          ? '#28a745'
+                                          : agent.performanceMetrics.lifeSalesConversations.percentage >= 80
+                                            ? '#fd7e14'
+                                            : '#dc3545';
+                                      }
+                                    }}
+                                  ></div>
+                                </div>
+                                <span
+                                  className={`performance-badge ${agent.performanceMetrics.sales.percentage >= 100 ? 'success' : agent.performanceMetrics.sales.percentage >= 80 ? 'warning' : 'danger'}`}
+                                >
+                                  {agent.performanceMetrics.sales.percentage}%
+                                </span>
+                              </div>
+                              <div className="metric-value">{agent.actual.sales}</div>
+                              <div className="metric-target">Target: {agent.forecast.sales}</div>
+                              <div className="metric-progress">
+                                <div className="progress-bar">
+                                  <div
+                                    className="progress-fill"
+                                    ref={(el) => {
+                                      if (el) {
+                                        el.style.width = `${Math.min(agent.performanceMetrics.sales.percentage, 100)}%`;
+                                        el.style.background = agent.performanceMetrics.sales.percentage >= 100
+                                          ? '#28a745'
+                                          : agent.performanceMetrics.sales.percentage >= 80
+                                            ? '#fd7e14'
+                                            : '#dc3545';
+                                      }
+                                    }}
+                                  ></div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="metric-item">
+                              <div className="metric-header">
+                                <span className="metric-label">Referral Requests</span>
+                                <span
+                                  className={`performance-badge ${agent.performanceMetrics.referralRequests.percentage >= 100 ? 'success' : agent.performanceMetrics.referralRequests.percentage >= 80 ? 'warning' : 'danger'}`}
+                                >
+                                  {agent.performanceMetrics.referralRequests.percentage}%
+                                </span>
+                              </div>
+                              <div className="metric-value">{agent.actual.referralRequests}</div>
+                              <div className="metric-target">
+                                Target: {agent.forecast.referralRequests}
+                              </div>
+                              <div className="metric-progress">
+                                <div className="progress-bar">
+                                  <div
+                                    className="progress-fill"
+                                    ref={(el) => {
+                                      if (el) {
+                                        el.style.width = `${Math.min(agent.performanceMetrics.referralRequests.percentage, 100)}%`;
+                                        el.style.background = agent.performanceMetrics.referralRequests.percentage >= 100
+                                          ? '#28a745'
+                                          : agent.performanceMetrics.referralRequests.percentage >= 80
+                                            ? '#fd7e14'
+                                            : '#dc3545';
+                                      }
+                                    }}
+                                  ></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            {/* Team Forecast Management View - Only for managers viewing team */}
+            {hasTeamAccess &&
+              currentView === 'team' &&
+              teamViewMode === 'forecast' &&
+              teamPerformance && (
+                <div className="team-forecast-management">
+                  <div className="team-forecast-header">
+                    <h2>Team Forecast Management</h2>
+                    <p>Review and manage forecasts for your team members</p>
+                  </div>
+
+                  <div className="team-forecast-grid">
+                    {teamPerformance.agents.map((agent) => (
+                      <div key={agent.userId} className="agent-forecast-card">
+                        <div className="agent-forecast-header">
+                          <div className="agent-info">
+                            <h4>
+                              <FontAwesomeIcon icon={faUser} />
+                              {agent.userName}
+                            </h4>
+                            <span className="agent-role">{agent.userRole}</span>
+                          </div>
+                          <div className="forecast-status">
+                            {agent.forecast.peopleContacted > 0 ||
+                              agent.forecast.lifeSalesConversations > 0 ||
+                              agent.forecast.sales > 0 ||
+                              agent.forecast.referralRequests > 0 ? (
+                              <span className="has-forecast">
+                                <FontAwesomeIcon icon={faCheckCircle} />
+                                Forecast Set
+                              </span>
+                            ) : (
+                              <span className="no-forecast">
+                                <FontAwesomeIcon icon={faExclamationTriangle} />
+                                No Forecast
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="agent-forecast-metrics">
+                          <div className="forecast-metric">
+                            <label>People Contacted:</label>
+                            <div className="metric-display">
+                              <span className="current-value">
+                                {agent.forecast.peopleContacted}
+                              </span>
+                              <span className="vs-actual">
+                                vs {agent.actual.peopleContacted} actual
+                              </span>
+                            </div>
+                          </div>
+                          <div className="forecast-metric">
+                            <label>Life/Sales Conversations:</label>
+                            <div className="metric-display">
+                              <span className="current-value">
+                                {agent.forecast.lifeSalesConversations}
+                              </span>
+                              <span className="vs-actual">
+                                vs {agent.actual.lifeSalesConversations} actual
+                              </span>
+                            </div>
+                          </div>
+                          <div className="forecast-metric">
+                            <label>Sales Closed:</label>
+                            <div className="metric-display">
+                              <span className="current-value">{agent.forecast.sales}</span>
+                              <span className="vs-actual">vs {agent.actual.sales} actual</span>
+                            </div>
+                          </div>
+                          <div className="forecast-metric">
+                            <label>Referral Requests:</label>
+                            <div className="metric-display">
+                              <span className="current-value">
+                                {agent.forecast.referralRequests}
+                              </span>
+                              <span className="vs-actual">
+                                vs {agent.actual.referralRequests} actual
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="agent-forecast-actions">
+                          <button
+                            className="btn-edit-forecast"
+                            onClick={() => openForecastEditor(agent)}
+                          >
+                            <FontAwesomeIcon icon={faEdit} />
+                            Edit Forecast
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            {/* Team Comparison View - Only for managers viewing team */}
+            {hasTeamAccess &&
+              currentView === 'team' &&
+              teamViewMode === 'comparison' &&
+              teamPerformance && (
+                <div className="comparison-view">
+                  {/* Team Summary Elegant Comparison */}
+                  <div className="elegant-comparison-card">
+                    <div className="comparison-header">
+                      <div className="header-content">
+                        <h3 className="comparison-title">
+                          <FontAwesomeIcon icon={faUsers} />
+                          {accessLevel === 'all' ? 'Organization-wide' : 'Team'} Analytics Overview
+                        </h3>
+                        <p className="comparison-subtitle">
+                          Aggregated interaction analytics across all agents in your{' '}
+                          {accessLevel === 'all' ? 'organization' : 'team'}
+                        </p>
+                      </div>
+                      <div className="overall-performance">
+                        <div className="overall-score">
+                          {teamPerformance.teamSummary.totalAgents}
+                        </div>
+                        <div className="overall-label">Total Agents</div>
+                      </div>
+                    </div>
+
+                    <div className="comparison-metrics-grid">
+                      {/* People Contacted */}
+                      <div className="comparison-metric-item">
+                        <div className="metric-header">
+                          <div className="metric-icon contacts">
+                            <FontAwesomeIcon icon={faPhone} />
+                          </div>
+                          <div className="metric-info">
+                            <h4 className="metric-title">People Contacted</h4>
+                            <div className="metric-achievement">
+                              <span className="achievement-percentage success">
+                                {teamPerformance.teamSummary.peopleContacted}
+                              </span>
+                              <span className="achievement-label">total interactions</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="metric-comparison">
+                          <div className="team-metric-details">
+                            <div className="metric-breakdown">
+                              <span className="breakdown-label">
+                                Aggregated from {teamPerformance.teamSummary.totalAgents} agents
+                              </span>
+                              <span className="breakdown-average">
+                                Avg:{' '}
+                                {Math.round(
+                                  teamPerformance.teamSummary.peopleContacted /
+                                  teamPerformance.teamSummary.totalAgents
+                                )}{' '}
+                                per agent
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Life/Sales Conversations */}
+                      <div className="comparison-metric-item">
+                        <div className="metric-header">
+                          <div className="metric-icon conversations">
+                            <FontAwesomeIcon icon={faUser} />
+                          </div>
+                          <div className="metric-info">
+                            <h4 className="metric-title">Life/Sales Conversations</h4>
+                            <div className="metric-achievement">
+                              <span className="achievement-percentage success">
+                                {teamPerformance.teamSummary.lifeSalesConversations}
+                              </span>
+                              <span className="achievement-label">total conversations</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="metric-comparison">
+                          <div className="team-metric-details">
+                            <div className="metric-breakdown">
+                              <span className="breakdown-label">
+                                Aggregated from {teamPerformance.teamSummary.totalAgents} agents
+                              </span>
+                              <span className="breakdown-average">
+                                Avg:{' '}
+                                {Math.round(
+                                  teamPerformance.teamSummary.lifeSalesConversations /
+                                  teamPerformance.teamSummary.totalAgents
+                                )}{' '}
+                                per agent
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Sales Closed */}
+                      <div className="comparison-metric-item">
+                        <div className="metric-header">
+                          <div className="metric-icon sales">
+                            <FontAwesomeIcon icon={faChartLine} />
+                          </div>
+                          <div className="metric-info">
+                            <h4 className="metric-title">Sales Closed</h4>
+                            <div className="metric-achievement">
+                              <span className="achievement-percentage success">
+                                {teamPerformance.teamSummary.sales}
+                              </span>
+                              <span className="achievement-label">total sales</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="metric-comparison">
+                          <div className="team-metric-details">
+                            <div className="metric-breakdown">
+                              <span className="breakdown-label">
+                                Aggregated from {teamPerformance.teamSummary.totalAgents} agents
+                              </span>
+                              <span className="breakdown-average">
+                                Avg:{' '}
+                                {Math.round(
+                                  teamPerformance.teamSummary.sales /
+                                  teamPerformance.teamSummary.totalAgents
+                                )}{' '}
+                                per agent
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Referral Requests */}
+                      <div className="comparison-metric-item">
+                        <div className="metric-header">
+                          <div className="metric-icon referrals">
+                            <FontAwesomeIcon icon={faArrowTrendUp} />
+                          </div>
+                          <div className="metric-info">
+                            <h4 className="metric-title">Referral Requests</h4>
+                            <div className="metric-achievement">
+                              <span className="achievement-percentage success">
+                                {teamPerformance.teamSummary.referralRequests}
+                              </span>
+                              <span className="achievement-label">total referrals</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="metric-comparison">
+                          <div className="team-metric-details">
+                            <div className="metric-breakdown">
+                              <span className="breakdown-label">
+                                Aggregated from {teamPerformance.teamSummary.totalAgents} agents
+                              </span>
+                              <span className="breakdown-average">
+                                Avg:{' '}
+                                {Math.round(
+                                  teamPerformance.teamSummary.referralRequests /
+                                  teamPerformance.teamSummary.totalAgents
+                                )}{' '}
+                                per agent
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Individual Agent Comparisons */}
+                  <div className="agent-comparisons-section">
+                    <div className="section-header">
+                      <h3 className="section-title">
+                        <FontAwesomeIcon icon={faChartLine} />
+                        Individual Agent Performance Comparison
+                      </h3>
+                      <p className="section-subtitle">
+                        Detailed comparison of each agent's interaction analytics and achievements
+                      </p>
+                    </div>
+
+                    <div className="agent-comparison-grid">
+                      {teamPerformance.agents.map((agent) => (
+                        <div key={agent.userId} className="agent-comparison-card">
+                          <div className="agent-comparison-header">
+                            <div className="agent-info">
+                              <div className="agent-avatar">
+                                <FontAwesomeIcon icon={faUser} />
+                              </div>
+                              <div className="agent-details">
+                                <h4 className="agent-name">{agent.userName}</h4>
+                                <span className="agent-role">{agent.userRole}</span>
+                              </div>
+                            </div>
+                            <div className="agent-overall-score">
+                              <div className="score-value">
+                                {Math.round(
+                                  (agent.performanceMetrics.peopleContacted.percentage +
+                                    agent.performanceMetrics.lifeSalesConversations.percentage +
+                                    agent.performanceMetrics.sales.percentage +
+                                    agent.performanceMetrics.referralRequests.percentage) /
+                                  4
+                                )}
+                                %
+                              </div>
+                              <div className="score-label">Achievement</div>
+                            </div>
+                          </div>
+
+                          <div className="agent-metrics-comparison">
+                            <div className="agent-metric-row">
+                              <div className="metric-info">
+                                <span className="metric-name">People Contacted</span>
+                                <div className="metric-values">
+                                  <span className="actual-value">
+                                    {agent.actual.peopleContacted}
+                                  </span>
+                                  <span className="vs">vs</span>
+                                  <span className="target-value">
+                                    {agent.forecast.peopleContacted}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="metric-progress">
+                                <div className="progress-bar">
+                                  <div
+                                    className="progress-fill"
+                                    ref={(el) => {
+                                      if (el) {
+                                        el.style.width = `${Math.min(agent.performanceMetrics.peopleContacted.percentage, 100)}%`;
+                                        el.style.background = agent.performanceMetrics.peopleContacted.percentage >= 100
+                                          ? '#28a745'
+                                          : agent.performanceMetrics.peopleContacted.percentage >= 80
+                                            ? '#fd7e14'
+                                            : '#dc3545';
+                                      }
+                                    }}
+                                  ></div>
+                                </div>
+                                <span
+                                  className={`percentage ${agent.performanceMetrics.peopleContacted.percentage >= 100
+                                    ? 'success'
+                                    : agent.performanceMetrics.peopleContacted.percentage >= 80
+                                      ? 'warning'
+                                      : 'danger'
+                                    }`}
+                                >
+                                  {agent.performanceMetrics.peopleContacted.percentage.toFixed(1)}%
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="agent-metric-row">
+                              <div className="metric-info">
+                                <span className="metric-name">Conversations</span>
+                                <div className="metric-values">
+                                  <span className="actual-value">
+                                    {agent.actual.lifeSalesConversations}
+                                  </span>
+                                  <span className="vs">vs</span>
+                                  <span className="target-value">
+                                    {agent.forecast.lifeSalesConversations}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="metric-progress">
+                                <div className="progress-bar">
+                                  <div
+                                    className="progress-fill"
+                                    style={{
+                                      width: `${Math.min(agent.performanceMetrics.lifeSalesConversations.percentage, 100)}%`,
+                                      background:
+                                        agent.performanceMetrics.lifeSalesConversations
+                                          .percentage >= 100
+                                          ? '#28a745'
+                                          : agent.performanceMetrics.lifeSalesConversations
+                                            .percentage >= 80
+                                            ? '#fd7e14'
+                                            : '#dc3545',
+                                    }}
+                                  ></div>
+                                </div>
+                                <span
+                                  className={`percentage ${agent.performanceMetrics.lifeSalesConversations.percentage >=
+                                    100
+                                    ? 'success'
+                                    : agent.performanceMetrics.lifeSalesConversations
+                                      .percentage >= 80
+                                      ? 'warning'
+                                      : 'danger'
+                                    }`}
+                                >
+                                  {agent.performanceMetrics.lifeSalesConversations.percentage.toFixed(
+                                    1
+                                  )}
+                                  %
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="agent-metric-row">
+                              <div className="metric-info">
+                                <span className="metric-name">Sales Closed</span>
+                                <div className="metric-values">
+                                  <span className="actual-value">{agent.actual.sales}</span>
+                                  <span className="vs">vs</span>
+                                  <span className="target-value">{agent.forecast.sales}</span>
+                                </div>
+                              </div>
+                              <div className="metric-progress">
+                                <div className="progress-bar">
+                                  <div
+                                    className="progress-fill"
+                                    style={{
+                                      width: `${Math.min(agent.performanceMetrics.sales.percentage, 100)}%`,
+                                      background:
+                                        agent.performanceMetrics.sales.percentage >= 100
+                                          ? '#28a745'
+                                          : agent.performanceMetrics.sales.percentage >= 80
+                                            ? '#fd7e14'
+                                            : '#dc3545',
+                                    }}
+                                  ></div>
+                                </div>
+                                <span
+                                  className={`percentage ${agent.performanceMetrics.sales.percentage >= 100
+                                    ? 'success'
+                                    : agent.performanceMetrics.sales.percentage >= 80
+                                      ? 'warning'
+                                      : 'danger'
+                                    }`}
+                                >
+                                  {agent.performanceMetrics.sales.percentage.toFixed(1)}%
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="agent-metric-row">
+                              <div className="metric-info">
+                                <span className="metric-name">Referral Requests</span>
+                                <div className="metric-values">
+                                  <span className="actual-value">
+                                    {agent.actual.referralRequests}
+                                  </span>
+                                  <span className="vs">vs</span>
+                                  <span className="target-value">
+                                    {agent.forecast.referralRequests}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="metric-progress">
+                                <div className="progress-bar">
+                                  <div
+                                    className="progress-fill"
+                                    style={{
+                                      width: `${Math.min(agent.performanceMetrics.referralRequests.percentage, 100)}%`,
+                                      background:
+                                        agent.performanceMetrics.referralRequests.percentage >= 100
+                                          ? '#28a745'
+                                          : agent.performanceMetrics.referralRequests.percentage >=
+                                            80
+                                            ? '#fd7e14'
+                                            : '#dc3545',
+                                    }}
+                                  ></div>
+                                </div>
+                                <span
+                                  className={`percentage ${agent.performanceMetrics.referralRequests.percentage >= 100
+                                    ? 'success'
+                                    : agent.performanceMetrics.referralRequests.percentage >= 80
+                                      ? 'warning'
+                                      : 'danger'
+                                    }`}
+                                >
+                                  {agent.performanceMetrics.referralRequests.percentage.toFixed(1)}%
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Team Summary Charts */}
+                  <div className="charts-wrapper">
+                    <ModernPerformanceCharts
+                      forecast={teamPerformance.teamSummary}
+                      actual={teamPerformance.teamSummary}
+                      performanceMetrics={{
+                        peopleContacted: {
+                          actual: teamPerformance.teamSummary.peopleContacted,
+                          forecast: teamPerformance.teamSummary.peopleContacted,
+                          percentage: 100,
+                          variance: 0,
+                        },
+                        lifeSalesConversations: {
+                          actual: teamPerformance.teamSummary.lifeSalesConversations,
+                          forecast: teamPerformance.teamSummary.lifeSalesConversations,
+                          percentage: 100,
+                          variance: 0,
+                        },
+                        sales: {
+                          actual: teamPerformance.teamSummary.sales,
+                          forecast: teamPerformance.teamSummary.sales,
+                          percentage: 100,
+                          variance: 0,
+                        },
+                        referralRequests: {
+                          actual: teamPerformance.teamSummary.referralRequests,
+                          forecast: teamPerformance.teamSummary.referralRequests,
+                          percentage: 100,
+                          variance: 0,
+                        },
+                      }}
+                      userRole={user?.role || 'SUPERVISOR'}
+                    />
+                  </div>
+                </div>
+              )}
+          </>
+        )}
+      </div>
+
+      {/* Forecast Editing Modal */}
+      {showForecastModal && editingAgent && (
+        <div className="modal-overlay" onClick={closeForecastEditor}>
+          <div className="forecast-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>
+                <FontAwesomeIcon icon={faEdit} />
+                Edit Forecast for {editingAgent.userName}
+              </h3>
+              <button className="modal-close" onClick={closeForecastEditor}>
+                ×
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="forecast-form">
+                <div className="form-group">
+                  <label>People Contacted:</label>
+                  <div className="input-with-actual">
+                    <input
+                      type="number"
+                      value={editingAgent.forecast.peopleContacted}
+                      onChange={(e) =>
+                        updateEditingForecast('peopleContacted', parseInt(e.target.value) || 0)
+                      }
+                    />
+                    <span className="actual-value">
+                      Actual: {editingAgent.actual.peopleContacted}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Life/Sales Conversations:</label>
+                  <div className="input-with-actual">
+                    <input
+                      type="number"
+                      value={editingAgent.forecast.lifeSalesConversations}
+                      onChange={(e) =>
+                        updateEditingForecast(
+                          'lifeSalesConversations',
+                          parseInt(e.target.value) || 0
+                        )
+                      }
+                    />
+                    <span className="actual-value">
+                      Actual: {editingAgent.actual.lifeSalesConversations}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Sales Closed:</label>
+                  <div className="input-with-actual">
+                    <input
+                      type="number"
+                      value={editingAgent.forecast.sales}
+                      onChange={(e) =>
+                        updateEditingForecast('sales', parseInt(e.target.value) || 0)
+                      }
+                    />
+                    <span className="actual-value">Actual: {editingAgent.actual.sales}</span>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Referral Requests:</label>
+                  <div className="input-with-actual">
+                    <input
+                      type="number"
+                      value={editingAgent.forecast.referralRequests}
+                      onChange={(e) =>
+                        updateEditingForecast('referralRequests', parseInt(e.target.value) || 0)
+                      }
+                    />
+                    <span className="actual-value">
+                      Actual: {editingAgent.actual.referralRequests}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={closeForecastEditor}>
+                Cancel
+              </button>
+              <button
+                className="btn-save"
+                onClick={saveAgentForecast}
+                disabled={saveStatus === 'saving'}
+              >
+                <FontAwesomeIcon icon={saveStatus === 'saving' ? faSpinner : faSave} />
+                {saveStatus === 'saving' ? 'Saving...' : 'Save Forecast'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Agent Detail Modal */}
+      {showAgentDetailModal && selectedAgentDetails && (
+        <div className="modal-overlay" onClick={closeAgentDetailModal}>
+          <div className="agent-detail-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="agent-header-info">
+                <div className="agent-avatar-large">
+                  <FontAwesomeIcon icon={faUser} />
+                </div>
+                <div className="agent-header-details">
+                  <h3>{selectedAgentDetails.userName}</h3>
+                  <span className="agent-role-badge">{selectedAgentDetails.userRole}</span>
+                </div>
+              </div>
+              <button className="modal-close" onClick={closeAgentDetailModal}>
+                ×
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="detail-sections">
+                {/* Performance Overview */}
+                <div className="detail-section">
+                  <h4>
+                    <FontAwesomeIcon icon={faChartLine} />
+                    Performance Overview
+                  </h4>
+                  <div className="performance-overview-grid">
+                    <div className="overview-metric">
+                      <div className="metric-header">
+                        <span className="metric-name">People Contacted</span>
+                        <span
+                          className={`performance-indicator ${selectedAgentDetails.performanceMetrics.peopleContacted.percentage >= 100 ? 'success' : selectedAgentDetails.performanceMetrics.peopleContacted.percentage >= 80 ? 'warning' : 'danger'}`}
+                        >
+                          {selectedAgentDetails.performanceMetrics.peopleContacted.percentage}%
+                        </span>
+                      </div>
+                      <div className="metric-values">
+                        <div className="actual-value">
+                          <span className="value">
+                            {selectedAgentDetails.actual.peopleContacted}
+                          </span>
+                          <span className="label">Actual</span>
+                        </div>
+                        <div className="vs-divider">vs</div>
+                        <div className="forecast-value">
+                          <span className="value">
+                            {selectedAgentDetails.forecast.peopleContacted}
+                          </span>
+                          <span className="label">Forecast</span>
+                        </div>
+                      </div>
+                      <div className="variance">
+                        <span
+                          className={`variance-value ${selectedAgentDetails.performanceMetrics.peopleContacted.variance >= 0 ? 'positive' : 'negative'}`}
+                        >
+                          {selectedAgentDetails.performanceMetrics.peopleContacted.variance >= 0
+                            ? '+'
+                            : ''}
+                          {selectedAgentDetails.performanceMetrics.peopleContacted.variance}
+                        </span>
+                        <span className="variance-label">variance</span>
+                      </div>
+                    </div>
+
+                    <div className="overview-metric">
+                      <div className="metric-header">
+                        <span className="metric-name">Life/Sales Conversations</span>
+                        <span
+                          className={`performance-indicator ${selectedAgentDetails.performanceMetrics.lifeSalesConversations.percentage >= 100 ? 'success' : selectedAgentDetails.performanceMetrics.lifeSalesConversations.percentage >= 80 ? 'warning' : 'danger'}`}
+                        >
+                          {
+                            selectedAgentDetails.performanceMetrics.lifeSalesConversations
+                              .percentage
+                          }
+                          %
+                        </span>
+                      </div>
+                      <div className="metric-values">
+                        <div className="actual-value">
+                          <span className="value">
+                            {selectedAgentDetails.actual.lifeSalesConversations}
+                          </span>
+                          <span className="label">Actual</span>
+                        </div>
+                        <div className="vs-divider">vs</div>
+                        <div className="forecast-value">
+                          <span className="value">
+                            {selectedAgentDetails.forecast.lifeSalesConversations}
+                          </span>
+                          <span className="label">Forecast</span>
+                        </div>
+                      </div>
+                      <div className="variance">
+                        <span
+                          className={`variance-value ${selectedAgentDetails.performanceMetrics.lifeSalesConversations.variance >= 0 ? 'positive' : 'negative'}`}
+                        >
+                          {selectedAgentDetails.performanceMetrics.lifeSalesConversations
+                            .variance >= 0
+                            ? '+'
+                            : ''}
+                          {selectedAgentDetails.performanceMetrics.lifeSalesConversations.variance}
+                        </span>
+                        <span className="variance-label">variance</span>
+                      </div>
+                    </div>
+
+                    <div className="overview-metric">
+                      <div className="metric-header">
+                        <span className="metric-name">Sales Closed</span>
+                        <span
+                          className={`performance-indicator ${selectedAgentDetails.performanceMetrics.sales.percentage >= 100 ? 'success' : selectedAgentDetails.performanceMetrics.sales.percentage >= 80 ? 'warning' : 'danger'}`}
+                        >
+                          {selectedAgentDetails.performanceMetrics.sales.percentage}%
+                        </span>
+                      </div>
+                      <div className="metric-values">
+                        <div className="actual-value">
+                          <span className="value">{selectedAgentDetails.actual.sales}</span>
+                          <span className="label">Actual</span>
+                        </div>
+                        <div className="vs-divider">vs</div>
+                        <div className="forecast-value">
+                          <span className="value">{selectedAgentDetails.forecast.sales}</span>
+                          <span className="label">Forecast</span>
+                        </div>
+                      </div>
+                      <div className="variance">
+                        <span
+                          className={`variance-value ${selectedAgentDetails.performanceMetrics.sales.variance >= 0 ? 'positive' : 'negative'}`}
+                        >
+                          {selectedAgentDetails.performanceMetrics.sales.variance >= 0 ? '+' : ''}
+                          {selectedAgentDetails.performanceMetrics.sales.variance}
+                        </span>
+                        <span className="variance-label">variance</span>
+                      </div>
+                    </div>
+
+                    <div className="overview-metric">
+                      <div className="metric-header">
+                        <span className="metric-name">Referral Requests</span>
+                        <span
+                          className={`performance-indicator ${selectedAgentDetails.performanceMetrics.referralRequests.percentage >= 100 ? 'success' : selectedAgentDetails.performanceMetrics.referralRequests.percentage >= 80 ? 'warning' : 'danger'}`}
+                        >
+                          {selectedAgentDetails.performanceMetrics.referralRequests.percentage}%
+                        </span>
+                      </div>
+                      <div className="metric-values">
+                        <div className="actual-value">
+                          <span className="value">
+                            {selectedAgentDetails.actual.referralRequests}
+                          </span>
+                          <span className="label">Actual</span>
+                        </div>
+                        <div className="vs-divider">vs</div>
+                        <div className="forecast-value">
+                          <span className="value">
+                            {selectedAgentDetails.forecast.referralRequests}
+                          </span>
+                          <span className="label">Forecast</span>
+                        </div>
+                      </div>
+                      <div className="variance">
+                        <span
+                          className={`variance-value ${selectedAgentDetails.performanceMetrics.referralRequests.variance >= 0 ? 'positive' : 'negative'}`}
+                        >
+                          {selectedAgentDetails.performanceMetrics.referralRequests.variance >= 0
+                            ? '+'
+                            : ''}
+                          {selectedAgentDetails.performanceMetrics.referralRequests.variance}
+                        </span>
+                        <span className="variance-label">variance</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Performance Summary */}
+                <div className="detail-section">
+                  <h4>
+                    <FontAwesomeIcon icon={faTarget} />
+                    Performance Summary
+                  </h4>
+                  <div className="summary-stats">
+                    <div className="summary-stat">
+                      <div className="stat-label">Overall Performance</div>
+                      <div className="stat-value">
+                        {Math.round(
+                          (selectedAgentDetails.performanceMetrics.peopleContacted.percentage +
+                            selectedAgentDetails.performanceMetrics.lifeSalesConversations
+                              .percentage +
+                            selectedAgentDetails.performanceMetrics.sales.percentage +
+                            selectedAgentDetails.performanceMetrics.referralRequests.percentage) /
+                          4
+                        )}
+                        %
+                      </div>
+                    </div>
+                    <div className="summary-stat">
+                      <div className="stat-label">Goals Met</div>
+                      <div className="stat-value">
+                        {
+                          [
+                            selectedAgentDetails.performanceMetrics.peopleContacted.percentage >=
+                            100,
+                            selectedAgentDetails.performanceMetrics.lifeSalesConversations
+                              .percentage >= 100,
+                            selectedAgentDetails.performanceMetrics.sales.percentage >= 100,
+                            selectedAgentDetails.performanceMetrics.referralRequests.percentage >=
+                            100,
+                          ].filter(Boolean).length
+                        }{' '}
+                        / 4
+                      </div>
+                    </div>
+                    <div className="summary-stat">
+                      <div className="stat-label">Top Metric</div>
+                      <div className="stat-value">
+                        {(() => {
+                          const metrics = selectedAgentDetails.performanceMetrics;
+                          const maxMetric = Math.max(
+                            metrics.peopleContacted.percentage,
+                            metrics.lifeSalesConversations.percentage,
+                            metrics.sales.percentage,
+                            metrics.referralRequests.percentage
+                          );
+                          if (maxMetric === metrics.peopleContacted.percentage) return 'Contacts';
+                          if (maxMetric === metrics.lifeSalesConversations.percentage)
+                            return 'Conversations';
+                          if (maxMetric === metrics.sales.percentage) return 'Sales';
+                          return 'Referrals';
+                        })()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-close" onClick={closeAgentDetailModal}>
+                Close
+              </button>
+              {canEdit && (
+                <button
+                  className="btn-edit-forecast"
+                  onClick={() => {
+                    closeAgentDetailModal();
+                    openForecastEditor(selectedAgentDetails);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faEdit} />
+                  Edit Forecast
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

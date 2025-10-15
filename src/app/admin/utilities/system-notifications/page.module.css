@@ -1,0 +1,460 @@
+/* System Notifications Admin Interface */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--card-bg, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.headerIcon {
+    color: #f59e0b;
+    font-size: 2rem;
+}
+
+.createBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.createBtn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    padding: 1rem;
+}
+
+.modalContent {
+    background: var(--card-bg, #ffffff);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-light, #e9ecef);
+}
+
+.modalHeader h3 {
+    margin: 0;
+    color: var(--text-dark, #212529);
+    font-weight: 600;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--text-medium, #6c757d);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.closeBtn:hover {
+    background: var(--bg-light, #f8f9fa);
+    color: var(--text-dark, #212529);
+}
+
+.modalBody {
+    padding: 1.5rem;
+}
+
+.modalFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-light, #e9ecef);
+    background: var(--bg-light, #f8f9fa);
+    border-radius: 0 0 12px 12px;
+}
+
+/* Role Checkboxes */
+.roleCheckboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--bg-light, #f8f9fa);
+    border-radius: 8px;
+}
+
+.roleCheckboxes .form-check {
+    margin: 0;
+}
+
+.roleCheckboxes .form-check-label {
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+/* Empty State */
+.emptyState {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--card-bg, #ffffff);
+    border-radius: 12px;
+    border: 2px dashed var(--border-light, #e9ecef);
+}
+
+.emptyState h3 {
+    color: var(--text-dark, #212529);
+    margin-bottom: 0.5rem;
+}
+
+/* Notifications List */
+.notificationsList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.notificationCard {
+    background: var(--card-bg, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.notificationCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-light, #e9ecef);
+}
+
+.notificationInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.titleRow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.typeIcon {
+    font-size: 1.2rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* Priority-based icon colors */
+.typeIcon.urgent {
+    color: var(--danger-color, #dc3545);
+}
+
+.typeIcon.high {
+    color: var(--warning-color, #fd7e14);
+}
+
+.typeIcon.normal {
+    color: var(--primary-color, #0d6efd);
+}
+
+.typeIcon.low {
+    color: var(--secondary-color, #6c757d);
+}
+
+.titleRow h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-dark, #212529);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.priorityBadge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Priority badge background colors */
+.priorityBadge.urgent {
+    background-color: var(--danger-color, #dc3545);
+}
+
+.priorityBadge.high {
+    background-color: var(--warning-color, #fd7e14);
+}
+
+.priorityBadge.normal {
+    background-color: var(--primary-color, #0d6efd);
+}
+
+.priorityBadge.low {
+    background-color: var(--secondary-color, #6c757d);
+}
+
+.metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-medium, #6c757d);
+}
+
+.type {
+    font-weight: 600;
+    color: var(--primary-color, #0d6efd);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.created,
+.expires {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.expires {
+    color: var(--warning-color, #f59e0b);
+    font-weight: 500;
+}
+
+/* Read Statistics */
+.readStats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    min-width: 120px;
+}
+
+.readCount {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-medium, #6c757d);
+    font-weight: 500;
+}
+
+.readPercentage {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--success-color, #198754);
+    padding: 0.25rem 0.75rem;
+    background: var(--success-bg-light, #d1e7dd);
+    border-radius: 16px;
+}
+
+/* Card Body */
+.cardBody {
+    padding: 1.5rem;
+}
+
+.cardBody p {
+    margin: 0 0 1rem 0;
+    color: var(--text-dark, #212529);
+    line-height: 1.6;
+}
+
+/* Target Roles */
+.targetRoles {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-light, #e9ecef);
+}
+
+.targetRoles strong {
+    color: var(--text-dark, #212529);
+    margin-right: 0.5rem;
+}
+
+.roleBadge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: var(--primary-bg-light, #cfe2ff);
+    color: var(--primary-color, #0d6efd);
+    border-radius: 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .createBtn {
+        justify-content: center;
+    }
+
+    .modal {
+        padding: 0.5rem;
+    }
+
+    .modalContent {
+        max-height: 95vh;
+    }
+
+    .cardHeader {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .readStats {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        min-width: unset;
+    }
+
+    .metadata {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .roleCheckboxes {
+        grid-template-columns: 1fr;
+    }
+
+    .targetRoles {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 576px) {
+    .header {
+        padding: 1rem;
+    }
+
+    .modalHeader,
+    .modalBody,
+    .modalFooter {
+        padding: 1rem;
+    }
+
+    .cardHeader,
+    .cardBody {
+        padding: 1rem;
+    }
+
+    .titleRow {
+        flex-wrap: wrap;
+    }
+
+    .titleRow h4 {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: unset;
+    }
+}
+
+/* Loading and Error States */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    color: var(--text-medium, #6c757d);
+}
+
+.error {
+    color: var(--danger-color, #dc3545);
+    background: var(--danger-bg-light, #f8d7da);
+    border: 1px solid var(--danger-border, #f5c6cb);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Animation for new notifications */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notificationCard.new {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* High priority notification highlight */
+.notificationCard[data-priority="URGENT"] {
+    border-left: 4px solid #dc3545;
+}
+
+.notificationCard[data-priority="HIGH"] {
+    border-left: 4px solid #fd7e14;
+}
+
+/* Focus states for accessibility */
+.createBtn:focus,
+.closeBtn:focus {
+    outline: 2px solid var(--primary-color, #0d6efd);
+    outline-offset: 2px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color, #0d6efd);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
