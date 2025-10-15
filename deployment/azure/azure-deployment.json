@@ -1,0 +1,207 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appName": {
+      "type": "string",
+      "defaultValue": "sam",
+      "metadata": {
+        "description": "The name of the application. This will be used to name all resources."
+      }
+    },
+    "environment": {
+      "type": "string",
+      "defaultValue": "prod",
+      "allowedValues": ["dev", "test", "prod"],
+      "metadata": {
+        "description": "The environment deployment type."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    },
+    "dbServerName": {
+      "type": "string",
+      "defaultValue": "[concat('asam-pg-', parameters('environment'))]",
+      "metadata": {
+        "description": "The name of the PostgreSQL server."
+      }
+    },
+    "dbName": {
+      "type": "string",
+      "defaultValue": "asam",
+      "metadata": {
+        "description": "The name of the database."
+      }
+    },
+    "dbAdminLogin": {
+      "type": "string",
+      "defaultValue": "postgres",
+      "metadata": {
+        "description": "The administrator username for the PostgreSQL server."
+      }
+    },
+    "dbAdminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The administrator password for the PostgreSQL server."
+      }
+    },
+    "dbSku": {
+      "type": "string",
+      "defaultValue": "GP_Gen5_2",
+      "metadata": {
+        "description": "The SKU for the PostgreSQL server."
+      }
+    },
+    "appServicePlanSku": {
+      "type": "string",
+      "defaultValue": "P1v2",
+      "metadata": {
+        "description": "The SKU of the App Service Plan."
+      }
+    }
+  },
+  "variables": {
+    "appServicePlanName": "[concat(parameters('appName'), '-plan-', parameters('environment'))]",
+    "webAppName": "[concat(parameters('appName'), '-', parameters('environment'))]",
+    "uniqueDbServerName": "[concat(parameters('dbServerName'), '-', uniqueString(resourceGroup().id))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2020-12-01",
+      "name": "[variables('appServicePlanName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('appServicePlanSku')]"
+      },
+      "properties": {
+        "reserved": true
+      },
+      "kind": "linux"
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2020-12-01",
+      "name": "[variables('webAppName')]",
+      "location": "[parameters('location')]",
+      "kind": "app,linux",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+        "siteConfig": {
+          "linuxFxVersion": "NODE|18-lts",
+          "appSettings": [
+            {
+              "name": "NODE_ENV",
+              "value": "production"
+            },
+            {
+              "name": "DATABASE_HOST",
+              "value": "[concat(variables('uniqueDbServerName'), '.postgres.database.azure.com')]"
+            },
+            {
+              "name": "DATABASE_NAME",
+              "value": "[parameters('dbName')]"
+            },
+            {
+              "name": "DATABASE_USER",
+              "value": "[concat(parameters('dbAdminLogin'), '@', variables('uniqueDbServerName'))]"
+            },
+            {
+              "name": "DATABASE_PASSWORD",
+              "value": "[parameters('dbAdminPassword')]"
+            },
+            {
+              "name": "DATABASE_PORT",
+              "value": "5432"
+            },
+            {
+              "name": "DATABASE_URL",
+              "value": "[concat('postgresql://', parameters('dbAdminLogin'), '@', variables('uniqueDbServerName'), ':', parameters('dbAdminPassword'), '@', variables('uniqueDbServerName'), '.postgres.database.azure.com:5432/', parameters('dbName'), '?sslmode=require')]"
+            },
+            {
+              "name": "NEXTAUTH_URL",
+              "value": "[concat('https://', variables('webAppName'), '.azurewebsites.net')]"
+            },
+            {
+              "name": "NEXTAUTH_SECRET",
+              "value": "[guid(resourceGroup().id)]"
+            }
+          ],
+          "alwaysOn": true,
+          "http20Enabled": true
+        },
+        "httpsOnly": true
+      },
+      "dependsOn": ["[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"]
+    },
+    {
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "apiVersion": "2022-01-20-preview",
+      "name": "[variables('uniqueDbServerName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('dbSku')]",
+        "tier": "GeneralPurpose"
+      },
+      "properties": {
+        "version": "14",
+        "administratorLogin": "[parameters('dbAdminLogin')]",
+        "administratorLoginPassword": "[parameters('dbAdminPassword')]",
+        "storage": {
+          "storageSizeGB": 32
+        },
+        "backup": {
+          "backupRetentionDays": 7,
+          "geoRedundantBackup": "Disabled"
+        },
+        "highAvailability": {
+          "mode": "Disabled"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
+      "apiVersion": "2022-01-20-preview",
+      "name": "[concat(variables('uniqueDbServerName'), '/', parameters('dbName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', variables('uniqueDbServerName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
+      "apiVersion": "2022-01-20-preview",
+      "name": "[concat(variables('uniqueDbServerName'), '/AllowAzureServices')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', variables('uniqueDbServerName'))]"
+      ],
+      "properties": {
+        "startIpAddress": "0.0.0.0",
+        "endIpAddress": "0.0.0.0"
+      }
+    }
+  ],
+  "outputs": {
+    "webAppName": {
+      "type": "string",
+      "value": "[variables('webAppName')]"
+    },
+    "webAppUrl": {
+      "type": "string",
+      "value": "[concat('https://', variables('webAppName'), '.azurewebsites.net')]"
+    },
+    "databaseServerName": {
+      "type": "string",
+      "value": "[variables('uniqueDbServerName')]"
+    },
+    "databaseName": {
+      "type": "string",
+      "value": "[parameters('dbName')]"
+    }
+  }
+}

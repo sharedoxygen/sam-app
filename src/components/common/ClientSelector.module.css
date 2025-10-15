@@ -1,0 +1,151 @@
+.client-selector-container {
+  position: relative;
+  width: 100%;
+}
+
+.client-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.client-input {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+.client-input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.15);
+}
+
+.client-input.error {
+  border-color: #dc3545;
+}
+
+.client-input.selected {
+  background-color: #f0f8ff;
+}
+
+.input-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-medium);
+}
+
+.input-icon.loading {
+  color: var(--primary-color);
+}
+
+.input-icon.selected {
+  color: #28a745;
+}
+
+.input-icon.new {
+  color: #17a2b8;
+}
+
+.field-error {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.client-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.dropdown-header {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-medium);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.client-option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.client-option:hover {
+  background-color: var(--bg-light);
+}
+
+.client-option:last-child {
+  border-bottom: none;
+}
+
+.client-info {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.client-list-icon {
+  /* Renamed from .client-icon to avoid conflict with .input-icon */
+  color: var(--text-medium);
+  margin-top: 0.25rem;
+}
+
+.client-name {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.client-company {
+  font-size: 0.875rem;
+  color: var(--text-medium);
+  font-style: italic;
+}
+
+.client-contact {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  margin-top: 0.25rem;
+}
+
+.dropdown-message {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-medium);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropdown-message.new-client {
+  color: #17a2b8;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .client-dropdown {
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    top: auto;
+    max-height: 50vh;
+  }
+}

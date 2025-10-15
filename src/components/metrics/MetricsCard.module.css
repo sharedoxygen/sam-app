@@ -1,0 +1,173 @@
+.metricsCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.metricsCardTitle {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  color: var(--text-medium, #6c757d);
+  margin: 0;
+}
+
+.metricsTrend {
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+
+.metricsTrend.positive {
+  background-color: var(--success-bg-light, rgba(25, 135, 84, 0.1));
+  color: var(--success-color, #198754);
+}
+
+.metricsTrend.negative {
+  background-color: var(--danger-bg-light, rgba(220, 53, 69, 0.1));
+  color: var(--danger-color, #dc3545);
+}
+
+.metricsTrend span {
+  margin-left: 0.25rem;
+}
+
+.metricsCardBody {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: auto;
+}
+
+.metricsCard {
+  background-color: var(--card-bg, #fff);
+  border-radius: var(--border-radius-md, 6px);
+  box-shadow: var(--card-shadow, 0 2px 4px rgba(0, 0, 0, 0.05));
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.metricsCardValue {
+  font-size: var(--font-size-xl, 1.25rem);
+  font-weight: 700;
+  font-family: var(--font-family-base, sans-serif);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  color: var(--text-dark, #212529);
+}
+
+.metricsCardValue.withCustomColor {
+  /* Default color for when custom color is used */
+  color: var(--text-dark, #212529);
+}
+
+.metricsControls {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.btnControl {
+  background-color: var(--button-control-bg, #e9ecef);
+  color: var(--button-control-text, #495057);
+  border: 1px solid var(--button-control-border, #ced4da);
+  border-radius: var(--border-radius-sm, 4px);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+}
+
+.btnControl:hover:not(:disabled) {
+  background-color: var(--button-control-hover-bg, #dee2e6);
+  border-color: var(--button-control-hover-border, #adb5bd);
+  color: var(--button-control-hover-text, #343a40);
+}
+
+.btnControl:active:not(:disabled) {
+  background-color: var(--button-control-active-bg, #ced4da);
+  border-color: var(--button-control-active-border, #9ca3af);
+  transform: translateY(1px);
+}
+
+.btnControl:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--button-control-disabled-bg, #f8f9fa);
+  color: var(--button-control-disabled-text, #adb5bd);
+}
+
+.btnControl:focus {
+  outline: 2px solid var(--focus-color, #0d6efd);
+  outline-offset: 2px;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border-light, #e9ecef);
+  border-top: 2px solid var(--primary-color, #0d6efd);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-medium, #6c757d);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.loading .spinner {
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .metricsCardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .metricsTrend {
+    margin-left: 0;
+  }
+
+  .metricsCardBody {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .metricsControls {
+    align-self: flex-end;
+  }
+}

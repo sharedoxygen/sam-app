@@ -1,0 +1,278 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modalContent {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  max-width: 800px;
+  width: 90vw;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  background: linear-gradient(135deg, var(--primary-color, #0d6efd), var(--primary-dark, #0b5ed7));
+  color: white;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.headerContent {
+  flex: 1;
+}
+
+.modalTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modalSubtitle {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.closeButton {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.closeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modalBody {
+  padding: 32px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.targetsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.targetField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fieldLabel {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-dark, #212529);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fieldIcon {
+  color: var(--primary-color, #0d6efd);
+  font-size: 1rem;
+}
+
+.fieldInput {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border-light, #e9ecef);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.fieldInput:focus {
+  outline: none;
+  border-color: var(--primary-color, #0d6efd);
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+.fieldInput:disabled {
+  background: var(--bg-light, #f8f9fa);
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.fieldInput.fieldError {
+  border-color: #dc3545;
+}
+
+.fieldInput.fieldError:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.premiumInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currencySymbol {
+  position: absolute;
+  left: 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-muted, #6c757d);
+  z-index: 1;
+}
+
+.premiumInput {
+  padding-left: 40px !important;
+}
+
+.errorMessage {
+  font-size: 0.8rem;
+  color: #dc3545;
+  font-weight: 500;
+}
+
+.fieldHint {
+  font-size: 0.8rem;
+  color: var(--text-muted, #6c757d);
+  font-style: italic;
+}
+
+.modalFooter {
+  background: var(--bg-light, #f8f9fa);
+  padding: 20px 32px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid var(--border-light, #e9ecef);
+}
+
+.cancelButton {
+  background: white;
+  color: var(--text-muted, #6c757d);
+  border: 2px solid var(--border-light, #e9ecef);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: var(--bg-light, #f8f9fa);
+  border-color: var(--border-color, #dee2e6);
+}
+
+.cancelButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.saveButton {
+  background: var(--primary-color, #0d6efd);
+  color: white;
+  border: 2px solid var(--primary-color, #0d6efd);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.saveButton:hover:not(:disabled) {
+  background: var(--primary-dark, #0b5ed7);
+  border-color: var(--primary-dark, #0b5ed7);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+.saveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .modalContent {
+    width: 95vw;
+    max-height: 95vh;
+  }
+
+  .modalHeader {
+    padding: 20px;
+  }
+
+  .modalBody {
+    padding: 24px;
+  }
+
+  .targetsGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .modalFooter {
+    padding: 16px 24px;
+    flex-direction: column-reverse;
+  }
+
+  .cancelButton,
+  .saveButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

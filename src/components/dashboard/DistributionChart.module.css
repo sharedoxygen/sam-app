@@ -1,0 +1,53 @@
+.distributionChartContainer {
+  width: 100%;
+}
+
+.chartTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chartWrapper {
+  height: 250px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chartInsights {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: var(--bg-light, #f8f9fa);
+  border-radius: 6px;
+  border-left: 3px solid #28a745;
+}
+
+.insightText {
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  line-height: 1.4;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.insightText svg {
+  color: #28a745;
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+}
+
+/* Dark mode specific overrides for better contrast */
+:global(html.theme-dark) .chartTitle {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .chartInsights {
+  background-color: var(--bg-dark, #2d3748) !important;
+}

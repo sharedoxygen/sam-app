@@ -1,0 +1,315 @@
+.dailyMetricsContainer {
+  background-color: var(--card-bg, #fff);
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--card-shadow, 0 2px 4px rgba(0, 0, 0, 0.05));
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.weekNavigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: var(--bg-light, #f8f9fa);
+  border-radius: var(--border-radius-md, 8px);
+}
+
+.btnWeekNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: var(--bg-white, #fff);
+  border: 2px solid var(--border-light, #dee2e6);
+  border-radius: 50%;
+  color: var(--text-dark, #212529);
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.btnWeekNav:hover {
+  background-color: var(--primary-color, #0d6efd);
+  border-color: var(--primary-color, #0d6efd);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.btnWeekNav:focus {
+  outline: 2px solid var(--focus-color, #0d6efd);
+  outline-offset: 2px;
+}
+
+.weekRange {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 600;
+  color: var(--text-dark, #212529);
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+.metricsTableContainer {
+  display: flex;
+  gap: 1.5rem;
+  min-height: 500px;
+}
+
+.metricsLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+  color: var(--text-muted, #6c757d);
+  width: 100%;
+}
+
+.metricsLoading .spinnerBorder {
+  width: 3rem;
+  height: 3rem;
+  border: 0.25rem solid var(--border-light, #e9ecef);
+  border-top-color: var(--primary-color, #0d6efd);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+.metricsLoading p {
+  font-size: var(--font-size-sm, 0.875rem);
+  margin: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.metricsContent {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.daySelector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 150px;
+  background-color: var(--bg-light, #f8f9fa);
+  border-radius: var(--border-radius-md, 8px);
+  padding: 1rem;
+}
+
+.dayItem {
+  padding: 0.75rem;
+  background-color: var(--bg-white, #fff);
+  border: 2px solid var(--border-light, #e9ecef);
+  border-radius: var(--border-radius-sm, 4px);
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  text-align: center;
+}
+
+.dayItem:hover {
+  background-color: var(--bg-light, #f8f9fa);
+  border-color: var(--border-medium, #adb5bd);
+  transform: translateY(-1px);
+}
+
+.dayItem.active {
+  background-color: var(--primary-color, #0d6efd);
+  border-color: var(--primary-color, #0d6efd);
+  color: #fff;
+}
+
+.dayItem.active:hover {
+  background-color: var(--primary-dark, #0b5ed7);
+  border-color: var(--primary-dark, #0b5ed7);
+}
+
+.dayName {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.dayDate {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.metricsGrid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.metricsDayTitle {
+  font-size: var(--font-size-xl, 1.5rem);
+  font-weight: 600;
+  color: var(--text-dark, #212529);
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.metricsDate {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 400;
+  color: var(--text-medium, #6c757d);
+}
+
+.metricsSection {
+  background-color: var(--bg-light, #f8f9fa);
+  border-radius: var(--border-radius-md, 8px);
+  padding: 1.5rem;
+  border-left: 4px solid var(--primary-color, #0d6efd);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 600;
+  color: var(--text-dark, #212529);
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.metricsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+  color: var(--text-muted, #6c757d);
+  background-color: var(--bg-light, #f8f9fa);
+  border-radius: var(--border-radius-md, 8px);
+  border: 2px dashed var(--border-light, #e9ecef);
+}
+
+.emptyState .emptyIcon {
+  font-size: 3rem;
+  color: var(--primary-color, #0d6efd);
+  margin-bottom: 1rem;
+}
+
+.emptyState h3 {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 600;
+  color: var(--text-dark, #212529);
+  margin: 0 0 0.5rem 0;
+}
+
+.emptyState p {
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dailyMetricsContainer {
+    padding: 1rem;
+  }
+
+  .weekNavigation {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .weekRange {
+    order: -1;
+  }
+
+  .metricsTableContainer {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .metricsContent {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .daySelector {
+    flex-direction: row;
+    min-width: auto;
+    overflow-x: auto;
+    padding: 0.75rem;
+  }
+
+  .dayItem {
+    min-width: 100px;
+    flex-shrink: 0;
+  }
+
+  .metricsSection {
+    padding: 1rem;
+  }
+
+  .metricsRow {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .weekNavigation {
+    padding: 0.75rem;
+  }
+
+  .btnWeekNav {
+    width: 36px;
+    height: 36px;
+    font-size: 0.75rem;
+  }
+
+  .weekRange {
+    font-size: var(--font-size-base, 1rem);
+  }
+
+  .daySelector {
+    padding: 0.5rem;
+  }
+
+  .dayItem {
+    padding: 0.5rem;
+    min-width: 80px;
+  }
+
+  .dayName {
+    font-size: 0.75rem;
+  }
+
+  .dayDate {
+    font-size: 0.6875rem;
+  }
+
+  .metricsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .metricsDayTitle {
+    font-size: var(--font-size-lg, 1.125rem);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+}

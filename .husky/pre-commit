@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Ensure we have access to npm/node commands regardless of git client
+# Use absolute paths for critical commands
+NPM_PATH="$(which npm 2>/dev/null || echo '/usr/local/bin/npm')"
+
+# Add node_modules/.bin to PATH for local tools
+export PATH="$PATH:./node_modules/.bin:/usr/local/bin:/opt/homebrew/bin"
+
+echo "🔍 Running pre-commit checks..."
+
+# Run style check first - fail fast if inline styles are found
+echo "📝 Checking for inline styles..."
+./scripts/check-no-inline-styles.sh
+
+# If style check passes, run tests
+echo "🧪 Running tests..."
+"$NPM_PATH" test

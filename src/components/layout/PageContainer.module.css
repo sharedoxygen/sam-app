@@ -1,0 +1,105 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 100%;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--bg-light);
+}
+
+.pageTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pageIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 12px;
+  font-size: 1.25rem;
+}
+
+.pageTitle {
+  font-size: var(--font-size-xxl);
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.pageSubtitle {
+  font-size: var(--font-size-md);
+  color: var(--text-medium);
+  margin: 0.25rem 0 0 0;
+}
+
+.pageActions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.pageContent {
+  flex: 1;
+}
+
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: var(--text-medium);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pageActions {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+}
+
+/* Theme support */
+:global(html.theme-dark) .pageIcon {
+  background-color: var(--primary-color);
+}
+
+:global(html.theme-statefarm) .pageIcon {
+  background-color: var(--primary-color);
+}

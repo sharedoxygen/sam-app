@@ -1,0 +1,10 @@
+.category-card.withDynamicBorder {
+  /* Dynamic border and background colors will be applied via CSS custom properties */
+  border-color: var(--category-color, var(--border-color));
+  background-color: var(--category-bg-color, transparent);
+}
+
+.category-icon.withDynamicColor {
+  /* Dynamic background color will be applied via CSS custom property */
+  background-color: var(--category-color, var(--primary-color));
+}

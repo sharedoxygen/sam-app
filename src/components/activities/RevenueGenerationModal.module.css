@@ -1,0 +1,411 @@
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  padding: 1rem;
+}
+
+.modalContainer {
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
+}
+
+.modalContent {
+  position: relative;
+}
+
+.modalHeader {
+  padding: 2rem 2rem 1rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.modalTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 0.25rem 0;
+}
+
+.modalSubtitle {
+  font-size: 1rem;
+  color: var(--text-medium);
+  margin: 0 0 0.25rem 0;
+}
+
+.modalDate {
+  font-size: 0.85rem;
+  color: var(--primary-color);
+  margin: 0;
+  font-weight: 600;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-medium);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  background: var(--bg-light);
+  color: var(--text-dark);
+}
+
+.modalBody {
+  padding: 2rem;
+}
+
+.revenueGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.productSection,
+.weeklyTotals {
+  background: var(--bg-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.weeklyTotals {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark, #0056b3));
+  color: white;
+}
+
+.weeklyTotals .productTitle {
+  color: white;
+}
+
+.weeklyTotals .dayHeader {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.productTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.daysGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.dayColumn,
+.totalColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dayHeader {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.valueControls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.controlBtn {
+  background: transparent;
+  color: var(--text-medium);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.controlBtn:hover {
+  background: var(--bg-light);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.controlBtn:active {
+  transform: scale(0.95);
+}
+
+.valueDisplay {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  width: 48px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.totalDisplay {
+  background: var(--bg-light);
+  border: 2px solid var(--primary-color);
+  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.weeklyTotals .totalDisplay {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: white;
+}
+
+.grandTotalDisplay {
+  background: #28a745;
+  color: white;
+  border: 2px solid #20c997;
+  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.modalFooter {
+  padding: 1.5rem 2rem 2rem 2rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.btnSecondary {
+  background: var(--bg-light);
+  color: var(--text-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnSecondary:hover {
+  background: var(--border-color);
+}
+
+.btnPrimary {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark, #0056b3));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btnPrimary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modalContainer {
+    margin: 0.5rem;
+    max-width: calc(100vw - 1rem);
+  }
+
+  .modalHeader,
+  .modalBody,
+  .modalFooter {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .daysGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .dayColumn,
+  .totalColumn {
+    gap: 0.5rem;
+  }
+
+  .valueDisplay {
+    width: 40px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+
+  .totalDisplay,
+  .grandTotalDisplay {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .controlBtn {
+    width: 20px;
+    height: 20px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Dark mode support */
+:global(html.theme-dark) .modalContainer {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .productSection {
+  background-color: var(--bg-dark, #2d3748) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* ===== COMPREHENSIVE DARK MODE FIXES ===== */
+:global(html.theme-dark) .modalHeader {
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .modalTitle {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .modalSubtitle {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .modalDate {
+  color: var(--primary-color) !important;
+}
+
+:global(html.theme-dark) .closeButton {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .closeButton:hover {
+  background: var(--bg-dark, #2d3748) !important;
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .weeklyTotals {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important;
+}
+
+:global(html.theme-dark) .productTitle {
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .weeklyTotals .productTitle {
+  color: white !important;
+}
+
+:global(html.theme-dark) .dayHeader {
+  color: var(--text-medium) !important;
+}
+
+:global(html.theme-dark) .weeklyTotals .dayHeader {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+:global(html.theme-dark) .controlBtn {
+  color: var(--text-medium) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .controlBtn:hover {
+  background: var(--bg-dark, #2d3748) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+}
+
+:global(html.theme-dark) .valueDisplay {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-dark) !important;
+}
+
+:global(html.theme-dark) .totalDisplay {
+  background: var(--bg-dark, #2d3748) !important;
+  color: var(--primary-color) !important;
+}
+
+:global(html.theme-dark) .weeklyTotals .totalDisplay {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  color: white !important;
+}
+
+:global(html.theme-dark) .modalFooter {
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .btnSecondary {
+  background: var(--bg-dark, #2d3748) !important;
+  color: var(--text-dark) !important;
+  border-color: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .btnSecondary:hover {
+  background: var(--border-color) !important;
+}
+
+:global(html.theme-dark) .btnPrimary {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important;
+  color: white !important;
+}
