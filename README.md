@@ -157,7 +157,7 @@ npm start
 
 ## 📄 **License**
 
-MIT License - Contact [Shared Oxygen, LLC](https://sharedoxygen.com) for licensing details.
+MIT
 
 ---
 
